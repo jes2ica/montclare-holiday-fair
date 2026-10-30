@@ -1,0 +1,268 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="robots" content="noindex, nofollow">
+<title>Face Painting Staff</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Petrona:wght@400;600&family=Public+Sans:wght@400;500;600&display=swap">
+<style>
+/* Layout: operator console for a tablet at the station; big tap targets, queue first. */
+:root {
+  --ground: #f5f8f6; --paper: #ffffff; --ink: #17262a; --muted: #5a6b6c;
+  --line: #d4e0dc; --accent: #2f6b5e; --accent-soft: #e2eee9; --on-accent: #ffffff;
+  --call: #8a5a00; --call-soft: #fbefd6; --error: #b3261e; --error-soft: #fbe3e1;
+  --display: "Petrona", Georgia, serif;
+  --body: "Public Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --ground: #101a1b; --paper: #162224; --ink: #e6efec; --muted: #9db0ad;
+    --line: #2a3b3c; --accent: #7fc3b1; --accent-soft: #1d3330; --on-accent: #0d1a18;
+    --call: #f0c46b; --call-soft: #3a2f17; --error: #ffb4ab; --error-soft: #3b1f1d;
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --ground: #101a1b; --paper: #162224; --ink: #e6efec; --muted: #9db0ad;
+  --line: #2a3b3c; --accent: #7fc3b1; --accent-soft: #1d3330; --on-accent: #0d1a18;
+  --call: #f0c46b; --call-soft: #3a2f17; --error: #ffb4ab; --error-soft: #3b1f1d;
+  color-scheme: dark;
+}
+* { box-sizing: border-box; }
+[hidden] { display: none !important; }
+html, body { margin: 0; }
+body { background: var(--ground); color: var(--ink); font-family: var(--body); font-size: 16px; line-height: 1.5; }
+.wrap { max-width: 980px; margin: 0 auto; padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); padding-block: 24px 48px; display: grid; gap: 20px; }
+h1 { font-family: var(--display); font-weight: 400; font-size: 1.8rem; margin: 0; }
+h2 { font-family: var(--display); font-weight: 400; font-size: 1.25rem; margin: 0; }
+p { margin: 0; }
+.eyebrow { font-size: 0.72rem; letter-spacing: 0.14em; text-transform: uppercase; color: var(--muted); font-weight: 600; }
+.top { display: flex; justify-content: space-between; align-items: end; gap: 12px; flex-wrap: wrap; }
+.stats { display: flex; gap: 24px; flex-wrap: wrap; font-variant-numeric: tabular-nums; }
+.stats b { font-family: var(--display); font-size: 1.6rem; font-weight: 400; display: block; line-height: 1.1; }
+.banner { padding: 12px 14px; border-radius: 6px; font-size: 0.92rem; }
+.banner.warn { background: var(--call-soft); color: var(--call); }
+.banner.err { background: var(--error-soft); color: var(--error); }
+.banner.ok { background: var(--accent-soft); color: var(--accent); }
+input[type="password"] { font: inherit; padding: 12px 14px; border: 1px solid var(--line); border-radius: 6px; background: var(--paper); color: var(--ink); width: 100%; max-width: 260px; }
+button { font: inherit; font-size: 0.9rem; font-weight: 600; border-radius: 6px; padding: 9px 12px; cursor: pointer; border: 1px solid var(--line); background: var(--paper); color: var(--ink); white-space: nowrap; }
+button.go { background: var(--accent); color: var(--on-accent); border-color: var(--accent); }
+button.call { background: var(--call-soft); color: var(--call); border-color: transparent; }
+button.danger { color: var(--error); border-color: var(--error); background: transparent; }
+button:disabled { opacity: 0.5; cursor: wait; }
+button:focus-visible, input:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.login { display: grid; gap: 12px; max-width: 360px; }
+.login form { display: flex; gap: 8px; flex-wrap: wrap; }
+.table-wrap { overflow-x: auto; border: 1px solid var(--line); border-radius: 6px; background: var(--paper); }
+table { width: 100%; border-collapse: collapse; }
+th { text-align: left; font-size: 0.7rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted); font-weight: 600; padding: 10px 12px; border-bottom: 1px solid var(--line); white-space: nowrap; }
+td { padding: 10px 12px; border-bottom: 1px solid var(--line); vertical-align: middle; font-variant-numeric: tabular-nums; }
+tr:last-child td { border-bottom: 0; }
+td.t { font-weight: 700; font-size: 1.1rem; }
+td.sub { color: var(--muted); font-size: 0.88rem; }
+.actions { display: flex; gap: 6px; flex-wrap: wrap; }
+.pill { display: inline-block; font-size: 0.76rem; font-weight: 600; padding: 2px 9px; border-radius: 999px; white-space: nowrap; }
+.pill.painting { background: var(--accent); color: var(--on-accent); }
+.pill.called { background: var(--call-soft); color: var(--call); }
+.pill.waiting, .pill.done { background: var(--accent-soft); color: var(--accent); }
+.pill.no_show { background: var(--error-soft); color: var(--error); }
+.empty { padding: 18px 12px; color: var(--muted); text-align: center; }
+details summary { cursor: pointer; font-weight: 600; }
+.footer-actions { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; border-top: 1px solid var(--line); padding-top: 18px; }
+.muted { color: var(--muted); font-size: 0.88rem; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="top">
+    <div>
+      <p class="eyebrow">Montclare Holiday Fair</p>
+      <h1>Face painting staff</h1>
+    </div>
+    <div class="stats" id="stats" hidden>
+      <div><span class="eyebrow">In line</span><b id="s-line">0</b></div>
+      <div><span class="eyebrow">Painting</span><b id="s-paint">0</b></div>
+      <div><span class="eyebrow">Done today</span><b id="s-done">0</b></div>
+      <div><span class="eyebrow">Wait for new</span><b id="s-wait">–</b></div>
+    </div>
+  </div>
+
+  <section class="login" id="login">
+    <p>Enter the staff PIN to manage the line.</p>
+    <form id="pin-form">
+      <label for="pin" class="eyebrow" style="flex-basis:100%">Staff PIN</label>
+      <input type="password" id="pin" autocomplete="current-password" inputmode="numeric">
+      <button type="submit" class="go">Open</button>
+    </form>
+    <p class="banner err" id="login-error" hidden></p>
+  </section>
+
+  <div id="app" hidden>
+    <div style="display:grid;gap:20px">
+      <p class="banner warn" id="texting-banner" hidden>Texting isn't connected yet, so "Text: turn ready" only marks the child as called. Call the ticket number out loud.</p>
+      <p class="banner" id="toast" hidden aria-live="polite"></p>
+
+      <section style="display:grid;gap:10px">
+        <h2>Line</h2>
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th>Ticket</th><th>Child</th><th>Parent</th><th>Phone</th><th>Status</th><th>Est.</th><th>Actions</th></tr></thead>
+            <tbody id="active"></tbody>
+          </table>
+        </div>
+        <p class="muted">Usual flow: <b>Text: turn ready</b> when a seat is about to open, <b>Start</b> when the child sits down, <b>Done</b> when finished. The list refreshes every 10 seconds.</p>
+      </section>
+
+      <details>
+        <summary>Finished (<span id="finished-count">0</span>)</summary>
+        <div class="table-wrap" style="margin-top:10px">
+          <table>
+            <thead><tr><th>Ticket</th><th>Child</th><th>Parent</th><th>Status</th><th></th></tr></thead>
+            <tbody id="finished"></tbody>
+          </table>
+        </div>
+      </details>
+
+      <div class="footer-actions">
+        <button type="button" class="danger" id="clear">Delete all entries</button>
+        <button type="button" class="danger" id="clear-confirm" hidden>Yes, delete every name and number</button>
+        <button type="button" id="clear-cancel" hidden>Cancel</button>
+        <span class="muted">Do this after the fair. We promised parents their numbers are deleted after the event.</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+(function () {
+  var $ = function (id) { return document.getElementById(id); };
+  var pin = '';
+  try { pin = sessionStorage.getItem('fp-pin') || ''; } catch (e) {}
+  var LABEL = { painting: 'Painting', called: 'Called', waiting: 'Waiting', done: 'Done', no_show: 'No-show' };
+
+  function api(path, body) {
+    return fetch('/api/fp/staff/' + path, {
+      method: body ? 'POST' : 'GET',
+      headers: Object.assign({ 'x-staff-pin': pin }, body ? { 'content-type': 'application/json' } : {}),
+      body: body ? JSON.stringify(body) : undefined,
+      cache: 'no-store'
+    }).then(function (r) {
+      return r.json().catch(function () { return {}; }).then(function (j) {
+        if (r.status === 401) { logout('Wrong PIN. Try again.'); throw new Error('auth'); }
+        if (!r.ok) throw new Error(j.error || 'Request failed (' + r.status + ').');
+        return j;
+      });
+    });
+  }
+
+  function toast(msg, kind) {
+    var t = $('toast'); t.textContent = msg; t.className = 'banner ' + kind; t.hidden = false;
+    clearTimeout(toast.h); toast.h = setTimeout(function () { t.hidden = true; }, 6000);
+  }
+
+  function btn(label, cls, onClick) {
+    var b = document.createElement('button'); b.type = 'button'; b.textContent = label;
+    if (cls) b.className = cls;
+    b.addEventListener('click', function () {
+      b.disabled = true;
+      onClick().catch(function (e) { if (e.message !== 'auth') toast(e.message, 'err'); }).then(function () { b.disabled = false; });
+    });
+    return b;
+  }
+
+  function act(ticket, status) {
+    return api('status', { ticket: ticket, status: status }).then(function (d) {
+      render(d);
+      if (d.text) toast(d.text.sent ? 'Text sent for #' + ticket + '.' : d.text.reason, d.text.sent ? 'ok' : 'warn');
+    });
+  }
+
+  function cell(text, cls) { var td = document.createElement('td'); td.textContent = text; if (cls) td.className = cls; return td; }
+  function pillCell(s) { var td = document.createElement('td'); td.innerHTML = '<span class="pill ' + s + '">' + LABEL[s] + '</span>'; return td; }
+
+  function render(d) {
+    $('stats').hidden = false;
+    var line = d.active.filter(function (r) { return r.status !== 'painting'; });
+    $('s-line').textContent = line.length;
+    $('s-paint').textContent = d.active.length - line.length;
+    $('s-done').textContent = d.done_count;
+    $('s-wait').textContent = d.join_now_min <= 0 ? 'Now' : '~' + d.join_now_min + ' min';
+    $('texting-banner').hidden = d.texting_ready;
+
+    var tb = $('active'); tb.textContent = '';
+    if (!d.active.length) tb.innerHTML = '<tr><td colspan="7" class="empty">No one in line.</td></tr>';
+    d.active.forEach(function (r) {
+      var tr = document.createElement('tr');
+      tr.appendChild(cell('#' + r.ticket, 't'));
+      tr.appendChild(cell(r.child));
+      tr.appendChild(cell(r.parent, 'sub'));
+      tr.appendChild(cell('••' + r.phone_last4 + (r.texted ? ' · texted' : ''), 'sub'));
+      tr.appendChild(pillCell(r.status));
+      tr.appendChild(cell(r.status === 'painting' ? r.est_min + 'm left' : (r.est_min <= 0 ? 'Next' : '~' + r.est_min + 'm'), 'sub'));
+      var td = document.createElement('td'), a = document.createElement('div'); a.className = 'actions';
+      if (r.status === 'waiting') {
+        a.appendChild(btn('Text: turn ready', 'call', function () { return act(r.ticket, 'called'); }));
+        a.appendChild(btn('Start', 'go', function () { return act(r.ticket, 'painting'); }));
+        a.appendChild(btn('No-show', '', function () { return act(r.ticket, 'no_show'); }));
+      } else if (r.status === 'called') {
+        a.appendChild(btn('Start', 'go', function () { return act(r.ticket, 'painting'); }));
+        a.appendChild(btn('Text again', 'call', function () {
+          return api('text', { ticket: r.ticket }).then(function (d2) { render(d2); toast(d2.text.sent ? 'Text sent again for #' + r.ticket + '.' : d2.text.reason, d2.text.sent ? 'ok' : 'warn'); });
+        }));
+        a.appendChild(btn('No-show', '', function () { return act(r.ticket, 'no_show'); }));
+        a.appendChild(btn('Back to line', '', function () { return act(r.ticket, 'waiting'); }));
+      } else {
+        a.appendChild(btn('Done', 'go', function () { return act(r.ticket, 'done'); }));
+      }
+      td.appendChild(a); tr.appendChild(td); tb.appendChild(tr);
+    });
+
+    $('finished-count').textContent = d.finished.length;
+    var fb = $('finished'); fb.textContent = '';
+    if (!d.finished.length) fb.innerHTML = '<tr><td colspan="5" class="empty">Nothing yet.</td></tr>';
+    d.finished.forEach(function (r) {
+      var tr = document.createElement('tr');
+      tr.appendChild(cell('#' + r.ticket, 't')); tr.appendChild(cell(r.child)); tr.appendChild(cell(r.parent, 'sub'));
+      tr.appendChild(pillCell(r.status));
+      var td = document.createElement('td'); td.appendChild(btn('Undo', '', function () { return act(r.ticket, 'waiting'); }));
+      tr.appendChild(td); fb.appendChild(tr);
+    });
+  }
+
+  function load() {
+    return api('queue').then(function (d) {
+      $('login').hidden = true; $('app').hidden = false;
+      try { sessionStorage.setItem('fp-pin', pin); } catch (e) {}
+      render(d);
+    });
+  }
+
+  function logout(msg) {
+    pin = ''; try { sessionStorage.removeItem('fp-pin'); } catch (e) {}
+    $('app').hidden = true; $('login').hidden = false;
+    if (msg) { $('login-error').textContent = msg; $('login-error').hidden = false; }
+  }
+
+  $('pin-form').addEventListener('submit', function (e) {
+    e.preventDefault(); pin = $('pin').value.trim(); $('login-error').hidden = true;
+    load().catch(function (e2) { if (e2.message !== 'auth') { $('login-error').textContent = e2.message; $('login-error').hidden = false; } });
+  });
+
+  $('clear').addEventListener('click', function () { $('clear').hidden = true; $('clear-confirm').hidden = false; $('clear-cancel').hidden = false; });
+  $('clear-cancel').addEventListener('click', function () { $('clear').hidden = false; $('clear-confirm').hidden = true; $('clear-cancel').hidden = true; });
+  $('clear-confirm').addEventListener('click', function () {
+    api('clear', {}).then(function (d) { render(d); toast('All entries deleted.', 'ok'); })
+      .catch(function (e) { if (e.message !== 'auth') toast(e.message, 'err'); })
+      .then(function () { $('clear-cancel').click(); });
+  });
+
+  if (pin) load().catch(function () {});
+  setInterval(function () { if (pin && !document.hidden && !$('app').hidden) load().catch(function () {}); }, 10000);
+})();
+</script>
+</body>
+</html>

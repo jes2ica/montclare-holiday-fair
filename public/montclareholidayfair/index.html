@@ -1,0 +1,270 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Montclare Holiday Fair</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<meta name="description" content="Yeti, Set, Snow! The Montclare Children's School Holiday Fair on Saturday, December 5: face painting with a live waitlist, a sensory Holiday Express, a game room, and a parent-led reading corner.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Young+Serif&family=Figtree:wght@400;500;600;700&display=swap">
+<style>
+/* Layout: the Yeti, Set, Snow! banner art, then the 50/50 raffle card, the 1st-floor entry cards, the 2nd-floor activity cards and the Gym 2 marketplace tiles. */
+:root {
+  --night: #1d2350;        /* hero band */
+  --night-ink: #f4f3ff;
+  --snow: #f7f8fc;         /* page ground */
+  --paper: #ffffff;
+  --ink: #1f2140;
+  --muted: #5d6080;
+  --line: #dfe1ef;
+  --berry: #b8315a;        /* accent */
+  --berry-soft: #fbe6ec;
+  --gold: #e3b341;
+  --on-berry: #ffffff;
+  --display: "Young Serif", Georgia, "Times New Roman", serif;
+  --body: "Figtree", system-ui, -apple-system, "Segoe UI", sans-serif;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --night: #11143a; --night-ink: #f4f3ff; --snow: #12142b; --paper: #1a1d3a;
+    --ink: #eceaff; --muted: #a6a8c8; --line: #2c3058; --berry: #f07a9c; --berry-soft: #3a1f33;
+    --gold: #f0c65e; --on-berry: #1a0d14; color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --night: #11143a; --night-ink: #f4f3ff; --snow: #12142b; --paper: #1a1d3a;
+  --ink: #eceaff; --muted: #a6a8c8; --line: #2c3058; --berry: #f07a9c; --berry-soft: #3a1f33;
+  --gold: #f0c65e; --on-berry: #1a0d14; color-scheme: dark;
+}
+* { box-sizing: border-box; }
+html, body { margin: 0; }
+body { background: var(--snow); color: var(--ink); font-family: var(--body); font-size: 17px; line-height: 1.6; }
+.wrap {
+  max-width: 1040px; margin: 0 auto;
+  padding-left: max(16px, env(safe-area-inset-left, 0px));
+  padding-right: max(16px, env(safe-area-inset-right, 0px));
+}
+h1, h2, h3 { font-family: var(--display); font-weight: 400; margin: 0; text-wrap: balance; }
+p { margin: 0; }
+a { color: var(--berry); }
+a:focus-visible, .btn:focus-visible { outline: 3px solid var(--gold); outline-offset: 3px; }
+.eyebrow { font-size: 0.76rem; letter-spacing: 0.16em; text-transform: uppercase; font-weight: 700; }
+.placeholder { color: var(--gold); font-style: italic; }
+
+/* Hero */
+.hero { background: var(--night); color: var(--night-ink); }
+.hero .banner { margin: 0 auto; max-width: 1600px; line-height: 0; }
+.hero .banner img { display: block; width: 100%; height: auto; }
+
+/* Activities */
+section.activities { padding-block: 0 64px; }
+section.activities .wrap { border-top: 1px solid var(--line); padding-top: 56px; }
+.section-head { display: grid; gap: 8px; margin-bottom: 28px; }
+.section-head .eyebrow { color: var(--berry); }
+.section-head h2 { font-size: clamp(1.8rem, 4vw, 2.5rem); }
+.grid { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; }
+.activity { background: var(--paper); border: 1px solid var(--line); border-radius: 10px; padding: 28px; display: grid; gap: 14px; align-content: start; min-width: 0; }
+.activity .icon { width: 52px; height: 52px; border-radius: 50%; display: grid; place-items: center; background: var(--berry-soft); color: var(--berry); }
+.activity h3 { font-size: 1.65rem; }
+.art { display: block; width: 100%; max-width: 300px; height: auto; justify-self: center; border-radius: 8px; }
+.activity p { color: var(--muted); }
+.wait { display: flex; align-items: baseline; gap: 10px; flex-wrap: wrap; padding: 14px 16px; border-radius: 8px; background: var(--berry-soft); }
+.wait .num { font-family: var(--display); font-size: 1.9rem; line-height: 1; color: var(--berry); font-variant-numeric: tabular-nums; }
+.wait .lbl { font-size: 0.92rem; color: var(--ink); }
+.btn { display: inline-block; justify-self: start; text-decoration: none; font-weight: 700; padding: 12px 20px; border-radius: 999px; background: var(--berry); color: var(--on-berry); }
+.btn:hover { filter: brightness(1.08); }
+.credit { font-size: 0.82rem; color: var(--muted); }
+
+/* Holiday Marketplace */
+section.market { padding-block: 0 64px; }
+section.market .wrap { border-top: 1px solid var(--line); padding-top: 56px; }
+.tiles { display: grid; grid-template-columns: repeat(auto-fill, minmax(190px, 1fr)); gap: 16px; list-style: none; padding: 0; margin: 0; }
+.tiles li { background: var(--paper); border: 1px solid var(--line); border-radius: 10px; padding: 22px; display: grid; gap: 12px; align-content: start; min-width: 0; }
+.tiles .icon { width: 44px; height: 44px; border-radius: 50%; display: grid; place-items: center; background: var(--berry-soft); color: var(--berry); }
+.tiles h3 { font-size: 1.3rem; }
+section.raffle-top { padding-block: 40px 56px; }
+.raffle .art { width: 200px; }
+.section-head.with-art { grid-template-columns: 180px 1fr; align-items: center; gap: 20px; }
+.section-head.with-art .art { width: 180px; }
+.raffle { grid-template-columns: auto 1fr auto; align-items: center; column-gap: 32px; }
+.raffle .body { display: grid; gap: 10px; min-width: 0; }
+.raffle .side { display: grid; gap: 12px; justify-items: start; }
+@media (max-width: 760px) { .raffle, .section-head.with-art { grid-template-columns: 1fr; } .section-head.with-art .art { justify-self: start; } }
+
+footer .wrap { padding-block: 28px; font-size: 0.85rem; color: var(--muted); display: flex; flex-wrap: wrap; gap: 8px 24px; justify-content: space-between; }
+
+@media (max-width: 760px) {
+  .grid { grid-template-columns: 1fr; }
+  .tiles { grid-template-columns: 1fr 1fr; }
+  .activity { padding: 22px; }
+}
+</style>
+</head>
+<body>
+
+<header class="hero">
+  <h1 class="banner">
+    <img src="/montclareholidayfair/banner.jpg"
+         srcset="/montclareholidayfair/banner-960.jpg 960w, /montclareholidayfair/banner.jpg 1916w"
+         sizes="(max-width: 1600px) 100vw, 1600px" width="1916" height="821"
+         alt="Yeti, Set, Snow! Montclare Holiday Fair. Saturday, December 5, 2026, 10 AM to 12 PM. Admission: a gently used plastic toy.">
+  </h1>
+</header>
+
+<main>
+  <section class="raffle-top">
+    <div class="wrap">
+      <article class="activity raffle" id="raffle">
+        <img class="art" src="/montclareholidayfair/booths/raffle.jpg" width="362" height="277" alt="" loading="lazy">
+        <div class="body">
+          <h3>50/50 Raffle</h3>
+          <p>Half the pot goes to one lucky winner, and the other half supports Montclare Children's School. Reserve tickets on your phone, then pay by card or cash at the raffle table.</p>
+        </div>
+        <div class="side">
+          <div class="wait" aria-live="polite">
+            <span class="num" id="raffle-prize">–</span>
+            <span class="lbl" id="raffle-label">Checking the pot…</span>
+          </div>
+          <a class="btn" href="/montclareholidayfair/raffle/">Buy raffle tickets</a>
+        </div>
+      </article>
+    </div>
+  </section>
+
+  <section class="activities" id="entry">
+    <div class="wrap">
+      <div class="section-head">
+        <p class="eyebrow">1st floor · Entry</p>
+        <h2>Welcome in</h2>
+      </div>
+      <div class="grid">
+        <article class="activity" id="admission">
+          <img class="art" src="/montclareholidayfair/booths/admission.jpg" width="362" height="277" alt="" loading="lazy">
+          <h3>Admission</h3>
+          <p>Bring one gently used plastic toy.</p>
+        </article>
+        <article class="activity" id="concessions">
+          <img class="art" src="/montclareholidayfair/booths/concessions.jpg" width="362" height="277" alt="" loading="lazy">
+          <h3>Concessions</h3>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <section class="activities">
+    <div class="wrap">
+      <div class="section-head">
+        <p class="eyebrow">2nd floor</p>
+        <h2>Activities</h2>
+      </div>
+
+      <div class="grid">
+        <article class="activity" id="face-painting">
+          <img class="art" src="/montclareholidayfair/booths/facepainting.jpg" width="362" height="277" alt="" loading="lazy">
+          <h3>Face Painting</h3>
+          <p>Snowflakes, reindeer, superheroes, sparkles. Skip the line: join the waitlist on your phone and we'll text you when it's your child's turn.</p>
+          <div class="wait" aria-live="polite">
+            <span class="num" id="fp-wait">–</span>
+            <span class="lbl" id="fp-label">Checking the line…</span>
+          </div>
+          <a class="btn" href="/montclareholidayfair/facepainting/">Join the waitlist</a>
+        </article>
+
+        <article class="activity" id="holiday-express">
+          <img class="art" src="/montclareholidayfair/booths/holidayexpress.jpg" width="362" height="277" alt="" loading="lazy">
+          <h3>Holiday Express Sensory Room</h3>
+          <p>All aboard for a calm, hands-on winter journey. Touch, listen, and explore at your own pace in a sensory-friendly space made for little travelers.</p>
+        </article>
+
+        <article class="activity" id="arts-crafts">
+          <img class="art" src="/montclareholidayfair/booths/artscrafts.jpg" width="362" height="277" alt="" loading="lazy">
+          <h3>Arts + Crafts</h3>
+        </article>
+
+        <article class="activity" id="fun-games">
+          <img class="art" src="/montclareholidayfair/booths/games.jpg" width="362" height="277" alt="" loading="lazy">
+          <h3>Fun Games</h3>
+          <p>Snowy games for every age. Drop in, play a round or two, and cheer each other on.</p>
+        </article>
+
+        <article class="activity" id="reading-corner">
+          <img class="art" src="/montclareholidayfair/booths/reading.jpg" width="362" height="277" alt="" loading="lazy">
+          <h3>Parent-Led Reading Corner</h3>
+          <p>Every great adventure begins with a story! Visit our cozy, winter-inspired reading corner at the Holiday Fair, where Montclare parents will bring favorite children's books to life for our little readers. Come relax, spark your child's imagination, and celebrate the joy of storytelling as a community.</p>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <section class="market" id="marketplace">
+    <div class="wrap">
+      <div class="section-head with-art">
+        <img class="art" src="/montclareholidayfair/booths/marketplace.jpg" width="362" height="277" alt="" loading="lazy">
+        <div><p class="eyebrow">Gym 2</p><h2>Holiday Marketplace</h2></div>
+      </div>
+      <ul class="tiles">
+        <li>
+          <img class="art" src="/montclareholidayfair/booths/swag.jpg" width="362" height="277" alt="" loading="lazy">
+          <h3>Swag</h3>
+        </li>
+        <li>
+          <img class="art" src="/montclareholidayfair/booths/bracelets.jpg" width="362" height="277" alt="" loading="lazy">
+          <h3>Bracelets &amp; Giveaways</h3>
+        </li>
+        <li>
+          <img class="art" src="/montclareholidayfair/booths/photowall.jpg" width="362" height="277" alt="" loading="lazy">
+          <h3>Wow Wall Photo Moment</h3>
+        </li>
+        <li>
+          <div class="icon" aria-hidden="true"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20s-7-4.4-7-10a4 4 0 0 1 7-2.6A4 4 0 0 1 19 10c0 5.6-7 10-7 10z"/></svg></div>
+          <h3>Scholarship benefit</h3>
+        </li>
+      </ul>
+    </div>
+  </section>
+
+</main>
+
+<footer>
+  <div class="wrap">
+    <span>Montclare Children's School Holiday Fair · Organized by the holiday fair committee</span>
+  </div>
+</footer>
+
+<script>
+(function () {
+  // Live face-painting wait.
+  var num = document.getElementById('fp-wait'), lbl = document.getElementById('fp-label');
+  function show(q) {
+    var n = q.items.filter(function (i) { return i.status !== 'painting'; }).length;
+    num.textContent = q.join_now_min <= 0 ? 'No wait' : '~' + q.join_now_min + ' min';
+    lbl.textContent = n === 0 ? 'Nobody in line right now' : n + (n === 1 ? ' child' : ' children') + ' in line' + (window.FP_DEMO ? ' (example)' : '');
+  }
+  function refresh() {
+    if (window.FP_DEMO) { show({ join_now_min: 44, items: [{status:'painting'},{status:'called'},{status:'waiting'},{status:'waiting'},{status:'waiting'}] }); return; }
+    fetch('/api/fp/queue', { cache: 'no-store' })
+      .then(function (r) { if (!r.ok) throw 0; return r.json(); })
+      .then(show)
+      .catch(function () { num.textContent = ''; lbl.textContent = 'See the current line on the waitlist page.'; });
+  }
+  // Live 50/50 pot.
+  var prize = document.getElementById('raffle-prize'), plbl = document.getElementById('raffle-label');
+  function money(n) { return '$' + (n % 1 ? n.toFixed(2) : n.toLocaleString()); }
+  function refreshRaffle() {
+    fetch('/api/raffle/info', { cache: 'no-store' })
+      .then(function (r) { if (!r.ok) throw 0; return r.json(); })
+      .then(function (d) {
+        if (d.winner) { prize.textContent = '#' + d.winner.ticket; plbl.textContent = 'Winning ticket · ' + money(d.prize) + ' prize'; return; }
+        prize.textContent = money(d.prize); plbl.textContent = 'to the winner so far';
+      })
+      .catch(function () { prize.textContent = ''; plbl.textContent = 'See the pot on the raffle page.'; });
+  }
+  refresh(); refreshRaffle();
+  setInterval(function () { if (!document.hidden) { refresh(); refreshRaffle(); } }, 15000);
+
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,492 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="robots" content="noindex, nofollow">
+<title>Raffle Staff</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Petrona:wght@400;600&family=Public+Sans:wght@400;500;600&display=swap">
+<style>
+/* Layout: operator console for the raffle table; find a code, charge it on Square or take cash, record sales at the table, draw the winner. */
+:root {
+  --ground: #f5f8f6; --paper: #ffffff; --ink: #17262a; --muted: #5a6b6c;
+  --line: #d4e0dc; --accent: #2f6b5e; --accent-soft: #e2eee9; --on-accent: #ffffff;
+  --call: #8a5a00; --call-soft: #fbefd6; --error: #b3261e; --error-soft: #fbe3e1;
+  --display: "Petrona", Georgia, serif;
+  --body: "Public Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --ground: #101a1b; --paper: #162224; --ink: #e6efec; --muted: #9db0ad;
+    --line: #2a3b3c; --accent: #7fc3b1; --accent-soft: #1d3330; --on-accent: #0d1a18;
+    --call: #f0c46b; --call-soft: #3a2f17; --error: #ffb4ab; --error-soft: #3b1f1d;
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --ground: #101a1b; --paper: #162224; --ink: #e6efec; --muted: #9db0ad;
+  --line: #2a3b3c; --accent: #7fc3b1; --accent-soft: #1d3330; --on-accent: #0d1a18;
+  --call: #f0c46b; --call-soft: #3a2f17; --error: #ffb4ab; --error-soft: #3b1f1d;
+  color-scheme: dark;
+}
+* { box-sizing: border-box; }
+[hidden] { display: none !important; }
+html, body { margin: 0; }
+body { background: var(--ground); color: var(--ink); font-family: var(--body); font-size: 16px; line-height: 1.5; }
+.wrap { max-width: 980px; margin: 0 auto; padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); padding-block: 24px 48px; display: grid; gap: 20px; }
+h1 { font-family: var(--display); font-weight: 400; font-size: 1.8rem; margin: 0; }
+h2 { font-family: var(--display); font-weight: 400; font-size: 1.25rem; margin: 0; }
+p { margin: 0; }
+.eyebrow { font-size: 0.72rem; letter-spacing: 0.14em; text-transform: uppercase; color: var(--muted); font-weight: 600; }
+.top { display: flex; justify-content: space-between; align-items: end; gap: 12px; flex-wrap: wrap; }
+.stats { display: flex; gap: 24px; flex-wrap: wrap; font-variant-numeric: tabular-nums; }
+.stats b { font-family: var(--display); font-size: 1.6rem; font-weight: 400; display: block; line-height: 1.1; }
+.banner { padding: 12px 14px; border-radius: 6px; font-size: 0.92rem; }
+.banner.warn { background: var(--call-soft); color: var(--call); }
+.banner.err { background: var(--error-soft); color: var(--error); }
+.banner.ok { background: var(--accent-soft); color: var(--accent); }
+input[type="password"], input[type="text"], input[type="search"], select { font: inherit; padding: 10px 12px; border: 1px solid var(--line); border-radius: 6px; background: var(--paper); color: var(--ink); width: 100%; }
+input[type="password"] { max-width: 260px; padding: 12px 14px; }
+button { font: inherit; font-size: 0.9rem; font-weight: 600; border-radius: 6px; padding: 9px 12px; cursor: pointer; border: 1px solid var(--line); background: var(--paper); color: var(--ink); white-space: nowrap; }
+button.go { background: var(--accent); color: var(--on-accent); border-color: var(--accent); }
+button.call { background: var(--call-soft); color: var(--call); border-color: transparent; }
+button.danger { color: var(--error); border-color: var(--error); background: transparent; }
+button:disabled { opacity: 0.5; cursor: wait; }
+button:focus-visible, input:focus-visible, select:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.login { display: grid; gap: 12px; max-width: 360px; }
+.login form { display: flex; gap: 8px; flex-wrap: wrap; }
+.panel { display: grid; gap: 10px; }
+.table-wrap { overflow-x: auto; border: 1px solid var(--line); border-radius: 6px; background: var(--paper); }
+table { width: 100%; border-collapse: collapse; }
+th { text-align: left; font-size: 0.7rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted); font-weight: 600; padding: 10px 12px; border-bottom: 1px solid var(--line); white-space: nowrap; }
+td { padding: 10px 12px; border-bottom: 1px solid var(--line); vertical-align: middle; font-variant-numeric: tabular-nums; }
+tr:last-child td { border-bottom: 0; }
+td.t { font-weight: 700; font-size: 1.05rem; white-space: nowrap; }
+td.sub { color: var(--muted); font-size: 0.88rem; }
+tr.hit td { background: var(--call-soft); }
+.actions { display: flex; gap: 6px; flex-wrap: wrap; }
+.pill { display: inline-block; font-size: 0.76rem; font-weight: 600; padding: 2px 9px; border-radius: 999px; white-space: nowrap; }
+.pill.paid { background: var(--accent-soft); color: var(--accent); }
+.pill.void, .pill.canceled { background: var(--error-soft); color: var(--error); }
+.empty { padding: 18px 12px; color: var(--muted); text-align: center; }
+.find { display: flex; gap: 8px; align-items: center; max-width: 420px; }
+.cash { display: grid; grid-template-columns: 2fr 2fr 1.3fr 1fr auto; gap: 8px; align-items: end; padding: 14px; border: 1px solid var(--line); border-radius: 6px; background: var(--paper); }
+.cash label { display: grid; gap: 4px; font-size: 0.8rem; color: var(--muted); font-weight: 600; }
+.draw { padding: 20px; border: 1px solid var(--line); border-radius: 6px; background: var(--paper); display: grid; gap: 12px; }
+.winner-num { font-family: var(--display); font-size: 3.4rem; line-height: 1; color: var(--accent); font-variant-numeric: tabular-nums; }
+details summary { cursor: pointer; font-weight: 600; }
+.footer-actions { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; border-top: 1px solid var(--line); padding-top: 18px; }
+.muted { color: var(--muted); font-size: 0.88rem; }
+@media (max-width: 760px) { .cash { grid-template-columns: 1fr 1fr; } .cash button { grid-column: 1 / -1; } }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="top">
+    <div>
+      <p class="eyebrow">Montclare Holiday Fair</p>
+      <h1>50/50 raffle staff</h1>
+    </div>
+    <div class="stats" id="stats" hidden>
+      <div><span class="eyebrow">Pot</span><b id="s-pot">$0</b></div>
+      <div><span class="eyebrow">Winner gets</span><b id="s-prize">$0</b></div>
+      <div><span class="eyebrow">Tickets sold</span><b id="s-sold">0</b></div>
+      <div><span class="eyebrow">Awaiting payment</span><b id="s-pending">0</b></div>
+    </div>
+  </div>
+
+  <section class="login" id="login">
+    <p>Enter the staff PIN to manage the raffle.</p>
+    <form id="pin-form">
+      <label for="pin" class="eyebrow" style="flex-basis:100%">Staff PIN</label>
+      <input type="password" id="pin" autocomplete="current-password" inputmode="numeric">
+      <button type="submit" class="go">Open</button>
+    </form>
+    <p class="banner err" id="login-error" hidden></p>
+  </section>
+
+  <div id="app" hidden>
+    <div style="display:grid;gap:24px">
+      <p class="banner" id="toast" hidden aria-live="polite"></p>
+
+      <section class="panel">
+        <h2>Awaiting payment</h2>
+        <div class="find">
+          <input type="search" id="find" placeholder="Code on the buyer's phone, e.g. 4821" inputmode="numeric" autocomplete="off" aria-label="Find a code">
+        </div>
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th>Code</th><th>Name</th><th>Tickets</th><th>Amount</th><th>Ordered</th><th>Payment</th></tr></thead>
+            <tbody id="pending"></tbody>
+          </table>
+        </div>
+        <p class="muted">Type the code on the buyer's phone. <b>Charge on Square</b> opens the Square app with the amount filled in and marks the order paid when you come back. If Square doesn't return here, don't charge again: check the Square app's transactions first. For cash, tap <b>Cash</b>. The buyer's ticket numbers appear on their phone. The list refreshes every 10 seconds.</p>
+      </section>
+
+      <section class="panel">
+        <h2>Record a sale at the table</h2>
+        <form class="cash" id="cash-form">
+          <label>Name<input type="text" id="c-name" maxlength="80" autocomplete="off"></label>
+          <label>Phone or email (optional)<input type="text" id="c-contact" maxlength="80" autocomplete="off"></label>
+          <label>Tickets<select id="c-qty"></select></label>
+          <label>Paid by<select id="c-method"><option value="square">Square</option><option value="cash">Cash</option></select></label>
+          <button type="submit" class="go" id="c-submit">Charge on Square</button>
+        </form>
+        <p class="muted">For buyers who didn't order on their phone. Square opens the Square app; Cash records the sale right away. Tell them their ticket numbers, which show up in the message afterward.</p>
+      </section>
+
+      <section class="draw" id="draw-box">
+        <h2>Drawing</h2>
+        <div id="winner" hidden>
+          <p class="eyebrow">Winning ticket</p>
+          <p class="winner-num" id="w-num"></p>
+          <p id="w-who"></p>
+        </div>
+        <div class="actions">
+          <button type="button" class="go" id="draw">Draw winner</button>
+          <button type="button" class="go" id="draw-confirm" hidden>Yes, draw now and close sales</button>
+          <button type="button" id="draw-cancel" hidden>Cancel</button>
+          <button type="button" id="undraw" hidden>Clear the drawing and reopen sales</button>
+        </div>
+        <p class="muted" id="draw-note">Every paid ticket has an equal chance. Drawing closes ticket sales and shows the winning number on the raffle page. If the winner can't be found, draw again.</p>
+      </section>
+
+      <section class="panel">
+        <h2>Paid (<span id="paid-count">0</span>)</h2>
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th>Tickets</th><th>Code</th><th>Name</th><th>Contact</th><th>Amount</th><th>Paid by</th><th></th></tr></thead>
+            <tbody id="paid"></tbody>
+          </table>
+        </div>
+      </section>
+
+      <details>
+        <summary>Canceled and voided (<span id="other-count">0</span>)</summary>
+        <div class="table-wrap" style="margin-top:10px">
+          <table>
+            <thead><tr><th>Code</th><th>Name</th><th>Tickets</th><th>Status</th></tr></thead>
+            <tbody id="other"></tbody>
+          </table>
+        </div>
+      </details>
+
+      <div class="footer-actions">
+        <button type="button" class="danger" id="clear">Delete all raffle entries</button>
+        <button type="button" class="danger" id="clear-confirm" hidden>Yes, delete every order and the drawing</button>
+        <button type="button" id="clear-cancel" hidden>Cancel</button>
+        <span class="muted">Do this after the prize is paid out and the totals are recorded.</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+(function () {
+  var $ = function (id) { return document.getElementById(id); };
+  var pin = '';
+  try { pin = sessionStorage.getItem('fp-pin') || ''; } catch (e) {}
+  // Venmo and Zelle are no longer offered, but older orders may still show them.
+  var METHOD = { square: 'Square', cash: 'Cash', venmo: 'Venmo', zelle: 'Zelle' };
+  var last = null;
+
+  function api(path, body) {
+    return fetch('/api/raffle/staff/' + path, {
+      method: body ? 'POST' : 'GET',
+      headers: Object.assign({ 'x-staff-pin': pin }, body ? { 'content-type': 'application/json' } : {}),
+      body: body ? JSON.stringify(body) : undefined,
+      cache: 'no-store'
+    }).then(function (r) {
+      return r.json().catch(function () { return {}; }).then(function (j) {
+        if (r.status === 401) { logout('Wrong PIN. Try again.'); throw new Error('auth'); }
+        if (!r.ok) throw new Error(j.error || 'Request failed (' + r.status + ').');
+        return j;
+      });
+    });
+  }
+
+  function toast(msg, kind) {
+    var t = $('toast'); t.textContent = msg; t.className = 'banner ' + kind; t.hidden = false;
+    clearTimeout(toast.h); toast.h = setTimeout(function () { t.hidden = true; }, 9000);
+  }
+
+  function btn(label, cls, onClick) {
+    var b = document.createElement('button'); b.type = 'button'; b.textContent = label;
+    if (cls) b.className = cls;
+    b.addEventListener('click', function () {
+      b.disabled = true;
+      onClick().catch(function (e) { if (e.message !== 'auth') toast(e.message, 'err'); }).then(function () { b.disabled = false; });
+    });
+    return b;
+  }
+
+  function money(n) { return '$' + (n % 1 ? n.toFixed(2) : n.toLocaleString()); }
+  function range(e) { return e.first_ticket === e.last_ticket ? '#' + e.first_ticket : '#' + e.first_ticket + '–' + e.last_ticket; }
+  function ago(ms) { var m = Math.round((Date.now() - ms) / 60000); return m < 1 ? 'just now' : m + ' min ago'; }
+  function cell(text, cls) { var td = document.createElement('td'); td.textContent = text; if (cls) td.className = cls; return td; }
+
+  function markPaid(e, method) {
+    return api('paid', { id: e.id, method: method }).then(function (d) {
+      render(d);
+      var done = d.entries.filter(function (x) { return x.id === e.id; })[0];
+      toast(e.code + ' paid by ' + METHOD[method] + ' · ' + e.name + ' has ' + (done ? range(done) : 'their tickets') + '.', 'ok');
+      $('find').value = ''; filterPending();
+    });
+  }
+
+  // ---- Square Point of Sale API: open the Square app to charge, then Square sends us back here ----
+  var SQUARE_PENDING = 'raffle-square-pending';
+  function isAndroid() { return /android/i.test(navigator.userAgent); }
+  function isIOS() { return /iPhone|iPad|iPod/.test(navigator.userAgent) || (/Macintosh/.test(navigator.userAgent) && navigator.maxTouchPoints > 1); }
+
+  function squareUrl(e, sq) {
+    var cents = Math.round(e.amount * 100), note = '50/50 raffle ' + e.code, state = String(e.id);
+    if (isAndroid()) {
+      return 'intent:#Intent;action=com.squareup.pos.action.CHARGE;package=com.squareup;' +
+        'S.com.squareup.pos.WEB_CALLBACK_URI=' + encodeURIComponent(sq.callback_url) + ';' +
+        'S.com.squareup.pos.CLIENT_ID=' + encodeURIComponent(sq.app_id) + ';' +
+        'S.com.squareup.pos.API_VERSION=v2.0;' +
+        'i.com.squareup.pos.TOTAL_AMOUNT=' + cents + ';' +
+        'S.com.squareup.pos.CURRENCY_CODE=USD;' +
+        'S.com.squareup.pos.TENDER_TYPES=com.squareup.pos.TENDER_CARD;' +
+        'S.com.squareup.pos.NOTE=' + encodeURIComponent(note) + ';' +
+        'S.com.squareup.pos.REQUEST_METADATA=' + state + ';' +
+        'l.com.squareup.pos.AUTO_RETURN_TIMEOUT_MS=3200;end';
+    }
+    return 'square-commerce-v1://payment/create?data=' + encodeURIComponent(JSON.stringify({
+      amount_money: { amount: String(cents), currency_code: 'USD' },
+      callback_url: sq.callback_url, client_id: sq.app_id, version: '1.3', notes: note, state: state,
+      options: { supported_tender_types: ['CREDIT_CARD'], clear_default_fees: true, auto_return: true, skip_receipt: true }
+    }));
+  }
+
+  function chargeOnSquare(e) {
+    var sq = last && last.square;
+    if (!sq) return Promise.reject(new Error('Square isn’t set up on the site yet.'));
+    if (!isIOS() && !isAndroid()) return Promise.reject(new Error('Open this page on the phone or iPad that has the Square Point of Sale app.'));
+    // Remembered in case Square comes back without our order id.
+    try { localStorage.setItem(SQUARE_PENDING, JSON.stringify({ id: e.id, code: e.code, at: Date.now() })); } catch (x) {}
+    window.location.href = squareUrl(e, sq);
+    return Promise.resolve();
+  }
+
+  // Square's answer arrives in the URL: ?data={json} on iOS, com.squareup.pos.* parameters on Android.
+  function readSquareResult() {
+    var q = new URLSearchParams(location.search), P = 'com.squareup.pos.', r = null;
+    if (q.has('data')) {
+      try {
+        var d = JSON.parse(q.get('data'));
+        r = { ok: d.status === 'ok', id: Number(d.state), server: d.transaction_id, client: d.client_transaction_id, error: d.error_code };
+      } catch (x) { r = { ok: false, error: 'Square sent back a response the page couldn’t read' }; }
+    } else if (q.has(P + 'CLIENT_TRANSACTION_ID') || q.has(P + 'ERROR_CODE')) {
+      var err = q.get(P + 'ERROR_CODE');
+      r = { ok: !err, id: Number(q.get(P + 'REQUEST_METADATA')), server: q.get(P + 'SERVER_TRANSACTION_ID'),
+            client: q.get(P + 'CLIENT_TRANSACTION_ID'), error: err && (q.get(P + 'ERROR_DESCRIPTION') || err) };
+    }
+    if (!r) return null;
+    var saved = null;
+    try { saved = JSON.parse(localStorage.getItem(SQUARE_PENDING) || 'null'); localStorage.removeItem(SQUARE_PENDING); } catch (x) {}
+    if (!r.id && saved) r.id = saved.id;
+    history.replaceState(null, '', location.pathname);
+    return r;
+  }
+
+  function applySquareResult(r) {
+    var e = last.entries.filter(function (x) { return x.id === r.id; })[0];
+    var label = e ? e.code : 'the order';
+    if (!r.ok) {
+      var canceled = /cancel/i.test(r.error || '');
+      toast(canceled ? 'Square payment canceled for ' + label + '. Nothing was charged.'
+                     : 'Square didn’t complete the payment for ' + label + ' (' + r.error + '). Check the Square app before trying again.', canceled ? 'warn' : 'err');
+      return Promise.resolve();
+    }
+    if (!e) { toast('Square approved a payment, but the page couldn’t tell which order it was for. Don’t charge again; note the code and check the Square app’s transactions.', 'warn'); return Promise.resolve(); }
+    // No server transaction ID means Square processed it offline; it settles when the device is back online.
+    var ref = r.server || ('offline ' + (r.client || ''));
+    return api('paid', { id: e.id, method: 'square', payment_ref: ref }).then(function (d) {
+      render(d);
+      var done = d.entries.filter(function (x) { return x.id === e.id; })[0];
+      toast('Square payment approved for ' + e.code + (r.server ? '' : ' (taken offline)') + ' · ' + e.name + ' has ' + (done ? range(done) : 'their tickets') + '.', 'ok');
+    }).catch(function (x) {
+      if (x.message !== 'auth') toast('Square approved ' + e.code + ', but marking it paid failed: ' + x.message, 'err');
+    });
+  }
+
+  function filterPending() {
+    var q = $('find').value.replace(/\D/g, '');
+    Array.prototype.forEach.call($('pending').querySelectorAll('tr[data-code]'), function (tr) {
+      var match = !q || tr.dataset.code.indexOf(q) >= 0;
+      tr.hidden = !match; tr.classList.toggle('hit', !!q && match);
+    });
+  }
+
+  function render(d) {
+    last = d;
+    $('stats').hidden = false;
+    var pending = d.entries.filter(function (e) { return e.status === 'pending'; });
+    var paid = d.entries.filter(function (e) { return e.status === 'paid'; }).sort(function (a, b) { return a.first_ticket - b.first_ticket; });
+    var other = d.entries.filter(function (e) { return e.status === 'canceled' || e.status === 'void'; });
+    $('s-pot').textContent = money(d.pot);
+    $('s-prize').textContent = money(d.prize);
+    $('s-sold').textContent = d.tickets_sold;
+    $('s-pending').textContent = pending.length;
+
+
+    var sel = $('c-qty');
+    if (!sel.options.length) d.prices.forEach(function (p) {
+      var o = document.createElement('option'); o.value = p.qty; o.textContent = p.qty + ' for ' + money(p.amount); sel.appendChild(o);
+    });
+
+    var tb = $('pending'); tb.textContent = '';
+    if (!pending.length) tb.innerHTML = '<tr><td colspan="6" class="empty">No orders waiting for payment.</td></tr>';
+    pending.forEach(function (e) {
+      var tr = document.createElement('tr'); tr.dataset.code = e.code.replace(/\D/g, '');
+      tr.appendChild(cell(e.code, 't'));
+      tr.appendChild(cell(e.name));
+      tr.appendChild(cell(e.qty));
+      tr.appendChild(cell(money(e.amount)));
+      tr.appendChild(cell(ago(e.created_at), 'sub'));
+      var td = document.createElement('td'), a = document.createElement('div'); a.className = 'actions';
+      if (d.square) a.appendChild(btn('Charge ' + money(e.amount) + ' on Square', 'call', function () { return chargeOnSquare(e); }));
+      a.appendChild(btn('Cash', 'go', function () { return markPaid(e, 'cash'); }));
+      a.appendChild(btn('Cancel', '', function () { return api('cancel', { id: e.id }).then(render); }));
+      td.appendChild(a); tr.appendChild(td); tb.appendChild(tr);
+    });
+    filterPending();
+
+    $('paid-count').textContent = paid.length;
+    var pb = $('paid'); pb.textContent = '';
+    if (!paid.length) pb.innerHTML = '<tr><td colspan="7" class="empty">No paid tickets yet.</td></tr>';
+    paid.forEach(function (e) {
+      var tr = document.createElement('tr');
+      tr.appendChild(cell(range(e), 't'));
+      tr.appendChild(cell(e.code, 'sub'));
+      tr.appendChild(cell(e.name));
+      tr.appendChild(cell(e.contact || '–', 'sub'));
+      tr.appendChild(cell(money(e.amount)));
+      var how = cell((METHOD[e.method] || e.method) + (e.payment_ref ? ' · app' : ''), 'sub');
+      if (e.payment_ref) how.title = 'Square transaction ' + e.payment_ref;
+      tr.appendChild(how);
+      var td = document.createElement('td');
+      td.appendChild(btn('Void', '', function () { return api('void', { id: e.id }).then(function (d2) { render(d2); toast(e.code + ' voided. Its tickets can no longer win.', 'warn'); }); }));
+      tr.appendChild(td); pb.appendChild(tr);
+    });
+
+    $('other-count').textContent = other.length;
+    var ob = $('other'); ob.textContent = '';
+    if (!other.length) ob.innerHTML = '<tr><td colspan="4" class="empty">None.</td></tr>';
+    other.forEach(function (e) {
+      var tr = document.createElement('tr');
+      tr.appendChild(cell(e.code, 't')); tr.appendChild(cell(e.name)); tr.appendChild(cell(e.first_ticket ? range(e) : e.qty, 'sub'));
+      var td = document.createElement('td'); td.innerHTML = '<span class="pill ' + e.status + '">' + (e.status === 'void' ? 'Voided' : 'Canceled') + '</span>';
+      tr.appendChild(td); ob.appendChild(tr);
+    });
+
+    var w = d.winner;
+    $('winner').hidden = !w;
+    if (w) {
+      $('w-num').textContent = '#' + w.ticket;
+      $('w-who').textContent = w.name + ' · ' + w.code + (w.contact ? ' · ' + w.contact : '') + (d.draws > 1 ? ' · draw ' + d.draws : '');
+    }
+    $('draw').textContent = w ? 'Draw again' : 'Draw winner';
+    $('draw-confirm').textContent = w ? 'Yes, draw a new winner' : 'Yes, draw now and close sales';
+    $('undraw').hidden = !w || !$('draw-confirm').hidden;
+  }
+
+  var squareResult = readSquareResult();
+
+  function load() {
+    return api('list').then(function (d) {
+      $('login').hidden = true; $('app').hidden = false;
+      try { sessionStorage.setItem('fp-pin', pin); } catch (e) {}
+      render(d); syncCashButton();
+      if (squareResult) { var r = squareResult; squareResult = null; return applySquareResult(r); }
+    });
+  }
+
+  function logout(msg) {
+    pin = ''; try { sessionStorage.removeItem('fp-pin'); } catch (e) {}
+    $('app').hidden = true; $('login').hidden = false;
+    if (msg) { $('login-error').textContent = msg; $('login-error').hidden = false; }
+  }
+
+  $('pin-form').addEventListener('submit', function (e) {
+    e.preventDefault(); pin = $('pin').value.trim(); $('login-error').hidden = true;
+    load().catch(function (e2) { if (e2.message !== 'auth') { $('login-error').textContent = e2.message; $('login-error').hidden = false; } });
+  });
+
+  $('find').addEventListener('input', filterPending);
+
+  function syncCashButton() {
+    $('c-submit').textContent = $('c-method').value === 'square' && last && last.square ? 'Charge on Square' : 'Record sale';
+  }
+  $('c-method').addEventListener('change', syncCashButton);
+
+  $('cash-form').addEventListener('submit', function (e) {
+    e.preventDefault();
+    var name = $('c-name').value.trim();
+    if (!name) { toast('Enter the buyer’s name.', 'err'); $('c-name').focus(); return; }
+    var b = $('c-submit'); b.disabled = true;
+    var sale = { name: name, contact: $('c-contact').value.trim(), qty: Number($('c-qty').value), method: $('c-method').value };
+    var clearForm = function () { $('c-name').value = ''; $('c-contact').value = ''; };
+
+    // Square: create the order, then charge it in the Square app; it's marked paid when Square sends us back.
+    if (sale.method === 'square' && last && last.square) {
+      api('reserve', sale)
+        .then(function (d) {
+          render(d); clearForm();
+          var made = d.entries.filter(function (x) { return x.id === d.reserved; })[0];
+          return chargeOnSquare(made).catch(function (e2) {
+            toast(e2.message + ' The order ' + made.code + ' is waiting under Awaiting payment.', 'warn');
+          });
+        })
+        .catch(function (e2) { if (e2.message !== 'auth') toast(e2.message, 'err'); })
+        .then(function () { b.disabled = false; });
+      return;
+    }
+
+    var before = last ? last.entries.map(function (x) { return x.id; }) : [];
+    api('cash', sale)
+      .then(function (d) {
+        render(d);
+        var made = d.entries.filter(function (x) { return before.indexOf(x.id) < 0 && x.status === 'paid'; })[0];
+        toast('Recorded for ' + name + ': tickets ' + (made ? range(made) : '') + ' (' + (made ? made.code : '') + '). Tell them their numbers.', 'ok');
+        clearForm(); $('c-name').focus();
+      })
+      .catch(function (e2) { if (e2.message !== 'auth') toast(e2.message, 'err'); })
+      .then(function () { b.disabled = false; });
+  });
+
+  function confirmPair(start, yes, no, onYes) {
+    var show = function (confirming) {
+      $(start).hidden = confirming; $(yes).hidden = !confirming; $(no).hidden = !confirming;
+      if (start === 'draw') $('undraw').hidden = confirming || !(last && last.winner);
+    };
+    $(start).addEventListener('click', function () { show(true); });
+    $(no).addEventListener('click', function () { show(false); });
+    $(yes).addEventListener('click', function () {
+      $(yes).disabled = true;
+      onYes().catch(function (e) { if (e.message !== 'auth') toast(e.message, 'err'); })
+        .then(function () { $(yes).disabled = false; show(false); });
+    });
+  }
+  confirmPair('draw', 'draw-confirm', 'draw-cancel', function () {
+    return api('draw', {}).then(function (d) { render(d); toast('Winning ticket: #' + d.winner.ticket + ' (' + d.winner.name + ').', 'ok'); });
+  });
+  confirmPair('clear', 'clear-confirm', 'clear-cancel', function () {
+    return api('clear', {}).then(function (d) { render(d); toast('All raffle entries deleted.', 'ok'); });
+  });
+  $('undraw').addEventListener('click', function () {
+    api('undraw', {}).then(function (d) { render(d); toast('Drawing cleared. Ticket sales are open again.', 'ok'); })
+      .catch(function (e) { if (e.message !== 'auth') toast(e.message, 'err'); });
+  });
+
+  if (pin) load().catch(function () {});
+  setInterval(function () { if (pin && !document.hidden && !$('app').hidden) load().catch(function () {}); }, 10000);
+})();
+</script>
+</body>
+</html>
