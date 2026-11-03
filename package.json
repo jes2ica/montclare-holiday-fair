@@ -3,7 +3,7 @@
   "private": true,
   "scripts": {
     "dev": "wrangler pages dev",
-    "deploy": "wrangler pages deploy"
+    "deploy": "CLOUDFLARE_ACCOUNT_ID=0ca3057b0381d0117295beb8b28506db wrangler pages deploy --branch main"
   },
   "devDependencies": {
     "wrangler": "^4.20.0"

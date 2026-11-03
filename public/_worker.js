@@ -44,7 +44,7 @@ async function handleApi(request, env, url) {
   }
 
   if (path.startsWith('/api/fp/staff/')) {
-    if (!env.STAFF_PIN) return json({ error: 'Staff PIN is not set up. Run: npx wrangler secret put STAFF_PIN' }, 503);
+    if (!env.STAFF_PIN) return json({ error: 'Staff PIN is not set up. Run: npx wrangler pages secret put STAFF_PIN' }, 503);
     if (request.headers.get('x-staff-pin') !== env.STAFF_PIN) return json({ error: 'Wrong PIN.' }, 401);
 
     if (path === '/api/fp/staff/queue' && method === 'GET') return json(await staffQueue(env));
@@ -283,7 +283,7 @@ async function handleRaffle(request, env, url) {
   if (path === '/api/raffle/entry' && method === 'GET') return raffleEntry(env, url.searchParams.get('token'));
 
   if (path.startsWith('/api/raffle/staff/')) {
-    if (!env.STAFF_PIN) return json({ error: 'Staff PIN is not set up. Run: npx wrangler secret put STAFF_PIN' }, 503);
+    if (!env.STAFF_PIN) return json({ error: 'Staff PIN is not set up. Run: npx wrangler pages secret put STAFF_PIN' }, 503);
     if (request.headers.get('x-staff-pin') !== env.STAFF_PIN) return json({ error: 'Wrong PIN.' }, 401);
     const body = method === 'POST' ? await request.json().catch(() => ({})) : {};
 
