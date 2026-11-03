@@ -1,40 +1,45 @@
 # Montclare Holiday Fair
 
-Website and volunteer tools for the Montclare Children's School Holiday Fair (*Yeti, Set, Snow!*), served at `jz-foundation.org/montclareholidayfair/` by the Cloudflare Worker `montclare-holiday-fair`.
+Website and volunteer tools for the Montclare Children's School Holiday Fair (*Yeti, Set, Snow!*), served at `holidayfair.montclarepa.org` by the Cloudflare Pages project `montclare-holiday-fair` in the Montclare PA's Cloudflare account.
 
 | Page | URL |
 |---|---|
-| Fair page | https://jz-foundation.org/montclareholidayfair/ |
-| Face-painting waitlist (parents) | https://jz-foundation.org/montclareholidayfair/facepainting/ |
-| Face-painting staff console (PIN) | https://jz-foundation.org/montclareholidayfair/facepainting/staff/ |
-| 50/50 raffle (buyers) | https://jz-foundation.org/montclareholidayfair/raffle/ |
-| Raffle staff console (PIN) | https://jz-foundation.org/montclareholidayfair/raffle/staff/ |
+| Fair page | https://holidayfair.montclarepa.org/ |
+| Face-painting waitlist (parents) | https://holidayfair.montclarepa.org/facepainting/ |
+| Face-painting staff console (PIN) | https://holidayfair.montclarepa.org/facepainting/staff/ |
+| 50/50 raffle (buyers) | https://holidayfair.montclarepa.org/raffle/ |
+| Raffle staff console (PIN) | https://holidayfair.montclarepa.org/raffle/staff/ |
 
 ## How it is wired
 
-- `jz-foundation.org` is served by the J&Z Foundation Worker (`curly-math-cec3`, a separate project). It forwards `/montclareholidayfair/*`, `/api/fp/*` and `/api/raffle/*` to this Worker through a service binding, so every URL above stays on `jz-foundation.org`. This Worker has no public URL of its own (`workers_dev` is off).
-- The Terms and Privacy pages linked from the fair pages (`/terms/`, `/privacy/`) live on the foundation site.
-- Both Workers share the Cloudflare D1 database `jz-foundation`. This project owns the `fp_queue`, `raffle_entries` and `raffle_draws` tables.
+- `montclarepa.org` DNS stays at GoDaddy. One record points the subdomain at Pages: `CNAME holidayfair → montclare-holiday-fair.pages.dev`, and the domain is added under the Pages project's **Custom domains**.
+- The Terms and Privacy pages linked from the fair pages live on the J&Z Foundation site (`jz-foundation.org/terms/`, `/privacy/`); the waitlist texts' Twilio A2P campaign is registered with those URLs.
+- Old `jz-foundation.org/montclareholidayfair/...` links are redirected to the matching page here.
+- Data lives in the D1 database `montclare-holiday-fair`: tables `fp_queue`, `raffle_entries` and `raffle_draws`.
 
 ## Files
 
-- `public/montclareholidayfair/` – fair page, banner and booth art, waitlist and raffle pages, staff consoles
-- `src/index.js` – API under `/api/fp/*` (join, live queue, staff actions, wait estimates, optional Twilio texts) and `/api/raffle/*` (orders, staff payments, drawing)
+- `public/` – fair page, banner and booth art, waitlist and raffle pages, staff consoles
+- `public/_worker.js` – Pages advanced-mode worker: API under `/api/fp/*` (join, live queue, staff actions, wait estimates, optional Twilio texts) and `/api/raffle/*` (orders, staff payments, drawing); never served as a file
 - `schema.sql` – waitlist and raffle tables (safe to re-run)
 - `migrations/` – one-off changes for databases created before a table changed
-- `wrangler.jsonc` – Worker config: painters, minutes per child, raffle bundles, Square app settings
+- `wrangler.jsonc` – Pages config: painters, minutes per child, raffle bundles, Square app settings
 
 ## Deploy
+
+First time, in the Montclare PA's Cloudflare account:
 
 ```bash
 npm install
 npx wrangler login
-npx wrangler d1 execute jz-foundation --remote --file=schema.sql   # tables, safe to re-run
-npx wrangler secret put STAFF_PIN                                  # PIN for both staff consoles
-npx wrangler deploy
+npx wrangler d1 create montclare-holiday-fair                                # put the id in wrangler.jsonc
+npx wrangler d1 execute montclare-holiday-fair --remote --file=schema.sql    # tables, safe to re-run
+npx wrangler pages project create montclare-holiday-fair --production-branch main
+npx wrangler pages deploy
+npx wrangler pages secret put STAFF_PIN                                      # PIN for both staff consoles
 ```
 
-Deploy this Worker before the foundation Worker that binds to it.
+After that, `npx wrangler pages deploy` publishes changes. Secrets apply to the next deploy, so deploy again after changing one.
 
 ## Face-painting waitlist
 
@@ -43,19 +48,19 @@ Parents join on their phone and get a ticket number; staff text them when it's t
 Turn on texting after the Twilio A2P campaign is approved:
 
 ```bash
-npx wrangler secret put TWILIO_ACCOUNT_SID
-npx wrangler secret put TWILIO_AUTH_TOKEN
-npx wrangler secret put TWILIO_MESSAGING_SERVICE_SID   # the Messaging Service tied to the approved campaign
+npx wrangler pages secret put TWILIO_ACCOUNT_SID
+npx wrangler pages secret put TWILIO_AUTH_TOKEN
+npx wrangler pages secret put TWILIO_MESSAGING_SERVICE_SID   # the Messaging Service tied to the approved campaign
 ```
 
-No redeploy needed. Until these are set, "Text: turn ready" only marks the child as called, and the staff console shows a reminder to call the number out loud.
+Then run `npx wrangler pages deploy`. Until these are set, "Text: turn ready" only marks the child as called, and the staff console shows a reminder to call the number out loud.
 
 On the day:
 
 - Station tablet: open the staff console, enter the PIN.
 - Post a QR code to the waitlist URL at the station.
 - Flow per child: **Text: turn ready** → **Start** (child sits down) → **Done**.
-- More than one painter? Change `PAINTERS` in `wrangler.jsonc` and run `npx wrangler deploy`.
+- More than one painter? Change `PAINTERS` in `wrangler.jsonc` and run `npx wrangler pages deploy`.
 
 ## 50/50 raffle
 
@@ -63,12 +68,12 @@ Buyers pick a bundle on their phone and get a code like `YETI-4821`. At the raff
 
 Square uses the Point of Sale API of the school's app at developer.squareup.com. `SQUARE_APP_ID` (the production Application ID, a public value) and `SQUARE_CALLBACK_URL` live under `vars` in `wrangler.jsonc`; the callback must match the Web callback URL saved in that app's Point of Sale API settings exactly.
 
-Ticket bundles: `RAFFLE_PRICES` under `vars`, as `qty:dollars` pairs, e.g. `1:5,5:20,15:50` (then `npx wrangler deploy`).
+Ticket bundles: `RAFFLE_PRICES` under `vars`, as `qty:dollars` pairs, e.g. `1:5,5:20,15:50` (then `npx wrangler pages deploy`).
 
 A database created before raffle orders stored Square transaction IDs needs this once:
 
 ```bash
-npx wrangler d1 execute jz-foundation --remote --file=migrations/0001_raffle_payment_ref.sql
+npx wrangler d1 execute montclare-holiday-fair --remote --file=migrations/0001_raffle_payment_ref.sql
 ```
 
 ## After the fair
@@ -79,7 +84,7 @@ npx wrangler d1 execute jz-foundation --remote --file=migrations/0001_raffle_pay
 ## Local testing
 
 ```bash
-npx wrangler d1 execute jz-foundation --local --file=schema.sql
+npx wrangler d1 execute montclare-holiday-fair --local --file=schema.sql
 echo 'STAFF_PIN=1234' > .dev.vars
-npx wrangler dev        # http://localhost:8787/montclareholidayfair/
+npx wrangler pages dev  # http://localhost:8788/
 ```

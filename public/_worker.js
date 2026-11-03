@@ -1,6 +1,5 @@
 // Montclare Holiday Fair: fair pages, face-painting waitlist API, and 50/50 raffle API.
-// Static pages come from ./public. jz-foundation.org forwards /montclareholidayfair/*,
-// /api/fp/* and /api/raffle/* here through a service binding.
+// Runs as the Cloudflare Pages advanced-mode worker; static pages come from ./public.
 
 const ACTIVE = ['painting', 'called', 'waiting'];
 const STAFF_STATUSES = ['waiting', 'called', 'painting', 'done', 'no_show'];
@@ -8,6 +7,11 @@ const STAFF_STATUSES = ['waiting', 'called', 'painting', 'done', 'no_show'];
 export default {
   async fetch(request, env) {
     const url = new URL(request.url);
+    // Links from when the fair lived at jz-foundation.org/montclareholidayfair/.
+    if (url.pathname === '/montclareholidayfair' || url.pathname.startsWith('/montclareholidayfair/')) {
+      url.pathname = url.pathname.slice('/montclareholidayfair'.length) || '/';
+      return Response.redirect(url.toString(), 301);
+    }
     if (url.pathname.startsWith('/api/fp/')) {
       try {
         return await handleApi(request, env, url);
