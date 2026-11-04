@@ -10,7 +10,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Young+Serif&family=Figtree:wght@400;500;600;700&display=swap">
 <style>
-/* Layout: the Yeti, Set, Snow! banner art, then the 50/50 raffle card, the online shop (hidden until shop/items.json lists items), the 1st-floor entry cards, the 2nd-floor activity cards and the Gym 2 marketplace tiles. */
+/* Layout: the Yeti, Set, Snow! banner art, then the 50/50 raffle card, the 1st-floor entry cards, the 2nd-floor activity cards and the Gym 2 marketplace tiles (Swag and Bracelets list Square checkout links from shop/items.json). */
 :root {
   --night: #1d2350;        /* hero band */
   --night-ink: #f4f3ff;
@@ -94,16 +94,20 @@ section.raffle-top { padding-block: 40px 56px; }
 .raffle .side { display: grid; gap: 12px; justify-items: start; }
 @media (max-width: 760px) { .raffle, .section-head.with-art { grid-template-columns: 1fr; } .section-head.with-art .art { justify-self: start; } }
 
-/* Online shop: Square checkout links */
-section.shop { padding-block: 0 64px; }
-section.shop .wrap { border-top: 1px solid var(--line); padding-top: 56px; }
-.section-head .lede { color: var(--muted); }
-.products li { display: flex; flex-direction: column; gap: 10px; }
-.products .art { max-width: none; aspect-ratio: 1; object-fit: cover; }
-.products .price { font-family: var(--display); font-size: 1.4rem; color: var(--berry); }
-.products .note { font-size: 0.9rem; color: var(--muted); }
-.products .btn, .products .sold { margin-top: auto; align-self: flex-start; }
-.products .sold { font-weight: 700; color: var(--muted); }
+/* Items sold online, listed under their marketplace tile */
+.section-head-text { display: grid; gap: 8px; }
+.market .pickup { color: var(--muted); }
+.buy { list-style: none; padding: 12px 0 0; margin: 0; display: grid; gap: 10px; border-top: 1px solid var(--line); }
+.tiles .buy li { background: none; border: 0; border-radius: 0; padding: 0; display: grid; grid-template-columns: 1fr auto; align-items: center; gap: 4px 12px; }
+.buy .name { font-weight: 600; line-height: 1.3; }
+.buy .note { grid-column: 1; font-size: 0.85rem; color: var(--muted); line-height: 1.35; }
+.buy .price { color: var(--berry); font-weight: 700; }
+.buy .btn { grid-row: 1 / span 2; grid-column: 2; padding: 8px 16px; font-size: 0.92rem; }
+.buy .sold { grid-row: 1 / span 2; grid-column: 2; font-size: 0.88rem; font-weight: 700; color: var(--muted); }
+@media (max-width: 560px) {
+  .tiles .buy li { grid-template-columns: 1fr; }
+  .buy .btn, .buy .sold { grid-row: auto; grid-column: 1; justify-self: start; }
+}
 
 footer .wrap { padding-block: 28px; font-size: 0.85rem; color: var(--muted); display: flex; flex-wrap: wrap; gap: 8px 24px; justify-content: space-between; }
 
@@ -142,17 +146,6 @@ footer .wrap { padding-block: 28px; font-size: 0.85rem; color: var(--muted); dis
           <a class="btn" href="/raffle/">Buy raffle tickets</a>
         </div>
       </article>
-    </div>
-  </section>
-
-  <section class="shop" id="shop" hidden>
-    <div class="wrap">
-      <div class="section-head">
-        <p class="eyebrow">Shop online</p>
-        <h2>Holiday shop</h2>
-        <p class="lede" id="shop-pickup"></p>
-      </div>
-      <ul class="tiles products" id="shop-items"></ul>
     </div>
   </section>
 
@@ -225,16 +218,18 @@ footer .wrap { padding-block: 28px; font-size: 0.85rem; color: var(--muted); dis
     <div class="wrap">
       <div class="section-head with-art">
         <img class="art" src="/booths/marketplace.jpg" width="362" height="277" alt="" loading="lazy">
-        <div><p class="eyebrow">Gym 2</p><h2>Holiday Marketplace</h2></div>
+        <div class="section-head-text"><p class="eyebrow">Gym 2</p><h2>Holiday Marketplace</h2><p class="pickup" id="shop-pickup" hidden></p></div>
       </div>
       <ul class="tiles">
         <li>
           <img class="art" src="/booths/swag.jpg" width="362" height="277" alt="" loading="lazy">
           <h3>Swag</h3>
+          <ul class="buy" data-booth="swag" hidden></ul>
         </li>
         <li>
           <img class="art" src="/booths/bracelets.jpg" width="362" height="277" alt="" loading="lazy">
           <h3>Bracelets &amp; Giveaways</h3>
+          <ul class="buy" data-booth="bracelets" hidden></ul>
         </li>
         <li>
           <img class="art" src="/booths/photowall.jpg" width="362" height="277" alt="" loading="lazy">
@@ -280,35 +275,37 @@ footer .wrap { padding-block: 28px; font-size: 0.85rem; color: var(--muted); dis
       })
       .catch(function () { prize.textContent = ''; plbl.textContent = 'See the pot on the raffle page.'; });
   }
-  // Online shop: items and Square checkout links come from shop/items.json.
+  // Items sold online: Square checkout links from shop/items.json, listed under their booth's tile.
+  function isSquareLink(href) {
+    try { var u = new URL(href); } catch (e) { return false; }
+    return u.protocol === 'https:' && /(^|\.)(square\.link|square\.site|squareup\.com)$/.test(u.hostname);
+  }
   function shopItem(it) {
     var li = document.createElement('li');
-    if (it.image) {
-      var img = document.createElement('img');
-      img.className = 'art'; img.src = it.image; img.alt = ''; img.loading = 'lazy';
-      li.appendChild(img);
-    }
-    var h = document.createElement('h3'); h.textContent = it.name; li.appendChild(h);
-    var pr = document.createElement('p'); pr.className = 'price'; pr.textContent = money(Number(it.price)); li.appendChild(pr);
-    if (it.note) { var n = document.createElement('p'); n.className = 'note'; n.textContent = it.note; li.appendChild(n); }
-    var link = null;
-    try { link = new URL(it.link); } catch (e) {}
-    if (it.sold_out || !link || link.protocol !== 'https:' || !/(^|\.)(square\.link|square\.site|squareup\.com)$/.test(link.hostname)) {
-      var s = document.createElement('p'); s.className = 'sold'; s.textContent = it.sold_out ? 'Sold out' : 'Coming soon'; li.appendChild(s);
+    var name = document.createElement('span'); name.className = 'name';
+    name.textContent = it.name + ' · ';
+    var pr = document.createElement('span'); pr.className = 'price'; pr.textContent = money(Number(it.price));
+    name.appendChild(pr); li.appendChild(name);
+    if (it.note) { var n = document.createElement('span'); n.className = 'note'; n.textContent = it.note; li.appendChild(n); }
+    if (!it.sold_out && isSquareLink(it.link)) {
+      var a = document.createElement('a'); a.className = 'btn'; a.href = it.link; a.textContent = 'Buy';
+      a.setAttribute('aria-label', 'Buy ' + it.name + ' online'); li.appendChild(a);
     } else {
-      var a = document.createElement('a'); a.className = 'btn'; a.href = link.href; a.textContent = 'Buy';
-      a.setAttribute('aria-label', 'Buy ' + it.name); li.appendChild(a);
+      var s = document.createElement('span'); s.className = 'sold'; s.textContent = it.sold_out ? 'Sold out' : 'Soon'; li.appendChild(s);
     }
     return li;
   }
   fetch('/shop/items.json', { cache: 'no-store' })
     .then(function (r) { if (!r.ok) throw 0; return r.json(); })
     .then(function (d) {
-      if (!d.items || !d.items.length) return;
-      document.getElementById('shop-pickup').textContent = d.pickup || '';
-      var ul = document.getElementById('shop-items');
-      d.items.forEach(function (it) { ul.appendChild(shopItem(it)); });
-      document.getElementById('shop').hidden = false;
+      var shown = false;
+      (d.items || []).forEach(function (it) {
+        var ul = document.querySelector('.buy[data-booth="' + it.booth + '"]');
+        if (!ul) return;
+        ul.appendChild(shopItem(it)); ul.hidden = false; shown = true;
+      });
+      var pickup = document.getElementById('shop-pickup');
+      if (shown && d.pickup) { pickup.textContent = d.pickup; pickup.hidden = false; }
     })
     .catch(function () {});
 
