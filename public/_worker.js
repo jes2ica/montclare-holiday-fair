@@ -162,10 +162,10 @@ async function join(request, env) {
   try { body = await request.json(); } catch { return json({ error: 'Could not read the form. Please try again.' }, 400); }
 
   const parent = clean(body.parent_name, 80);
-  const child = clean(body.child_first_name, 40);
+  const child = clean(body.child_name ?? body.child_first_name, 80);
   const mobile = normalizePhone(body.mobile);
   if (!parent) return json({ error: 'Enter your name.' }, 400);
-  if (!child) return json({ error: "Enter your child's first name." }, 400);
+  if (!child) return json({ error: "Enter your child's full name." }, 400);
   if (!mobile) return json({ error: 'Enter a 10-digit US mobile number.' }, 400);
   if (body.sms_consent !== true) return json({ error: 'Check the box to agree to receive the text alert.' }, 400);
 

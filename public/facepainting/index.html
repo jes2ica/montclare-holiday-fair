@@ -144,8 +144,8 @@ tr.mine td { background: var(--accent-soft); }
         <input type="text" id="parent-name" name="parent_name" autocomplete="name" maxlength="80" required>
       </div>
       <div class="field">
-        <label for="child-name">Child's first name</label>
-        <input type="text" id="child-name" name="child_first_name" autocomplete="off" maxlength="40" required>
+        <label for="child-name">Child's full name</label>
+        <input type="text" id="child-name" name="child_name" autocomplete="off" maxlength="80" required>
       </div>
       <div class="field">
         <label for="mobile">Mobile number <span class="hint">· US number for your turn alert</span></label>
@@ -269,14 +269,14 @@ tr.mine td { background: var(--accent-soft); }
     e.preventDefault();
     var data = {
       parent_name: $('parent-name').value.trim(),
-      child_first_name: $('child-name').value.trim(),
+      child_name: $('child-name').value.trim(),
       mobile: $('mobile').value,
       sms_consent: $('sms-consent').checked
     };
     var digits = data.mobile.replace(/\D/g, '');
     if (digits.length === 11 && digits[0] === '1') digits = digits.slice(1);
     var problem = !data.parent_name ? 'Enter your name.'
-      : !data.child_first_name ? "Enter your child's first name."
+      : !data.child_name ? "Enter your child's full name."
       : digits.length !== 10 ? 'Enter a 10-digit US mobile number.'
       : !data.sms_consent ? 'Check the box to agree to receive the text alert.' : '';
     if (problem) { err.textContent = problem; err.hidden = false; return; }
