@@ -13,13 +13,13 @@ Website and volunteer tools for the Montclare Children's School Holiday Fair (*Y
 ## How it is wired
 
 - `montclarepa.org` DNS stays at GoDaddy. One record points the subdomain at Pages: `CNAME holidayfair → montclare-holiday-fair.pages.dev`, and the domain is added under the Pages project's **Custom domains**.
-- The Terms and Privacy pages linked from the fair pages live on the J&Z Foundation site (`jz-foundation.org/terms/`, `/privacy/`); the waitlist texts' Twilio A2P campaign is registered with those URLs.
+- The PA's own Terms and Privacy pages are at `/terms/` and `/privacy/`. The waitlist texts go through J&Z Foundation's Twilio A2P campaign, which was registered with `jz-foundation.org/terms/` and `/privacy/`, so the SMS consent checkbox keeps linking to those.
 - Old `jz-foundation.org/montclareholidayfair/...` links are redirected to the matching page here.
 - Data lives in the D1 database `montclare-holiday-fair`: tables `fp_queue`, `raffle_entries` and `raffle_draws`.
 
 ## Files
 
-- `public/` – fair page, banner and booth art, waitlist and raffle pages, staff consoles
+- `public/` – fair page, banner and booth art, waitlist and raffle pages, staff consoles, Terms and Privacy
 - `public/_worker.js` – Pages advanced-mode worker: API under `/api/fp/*` (join, live queue, staff actions, wait estimates, optional Twilio texts) and `/api/raffle/*` (orders, staff payments, drawing); never served as a file
 - `schema.sql` – waitlist and raffle tables (safe to re-run)
 - `migrations/` – one-off changes for databases created before a table changed
