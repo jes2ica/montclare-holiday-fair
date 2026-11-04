@@ -110,6 +110,8 @@ The catalog is `public/shop/items.json`; edit it and run `npm run deploy`:
 - `"open": false` closes online sales; items then show as "At the fair".
 - Prices and stock are checked on the server, so editing the page in a browser can't change what Square charges.
 
+`npm run preview` deploys to https://preview.montclare-holiday-fair.pages.dev with the dummy catalog in `public/shop/items.demo.json` and checkout turned off, for trying the shop without touching the real site.
+
 A database created before the shop existed needs this once:
 
 ```bash

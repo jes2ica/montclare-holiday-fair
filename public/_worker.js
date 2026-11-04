@@ -462,8 +462,10 @@ async function raffleDraw(env) {
 // Buyers pay on a Square payment link (Checkout API); the order is marked paid once Square's order shows a payment.
 const SHOP_HOLD_MS = 30 * 60 * 1000; // unpaid orders hold stock this long, while the buyer is on Square's page
 
+// SHOP_DEMO (preview deploys only) shows the dummy catalog in shop/items.demo.json, with checkout turned off.
 async function shopCatalog(env, url) {
-  const res = await env.ASSETS.fetch(new Request(new URL('/shop/items.json', url)));
+  const file = env.SHOP_DEMO === '1' ? '/shop/items.demo.json' : '/shop/items.json';
+  const res = await env.ASSETS.fetch(new Request(new URL(file, url)));
   const c = res.ok ? await res.json() : {};
   const items = (Array.isArray(c.items) ? c.items : [])
     .filter((it) => it && it.id && it.name && Number(it.price) > 0)
@@ -499,7 +501,7 @@ async function handleShop(request, env, url) {
     const cat = await shopCatalog(env, url);
     const held = await shopHeld(env);
     return json({
-      open: cat.open && !!env.SQUARE_ACCESS_TOKEN, pickup: cat.pickup,
+      open: cat.open && (!!env.SQUARE_ACCESS_TOKEN || env.SHOP_DEMO === '1'), pickup: cat.pickup,
       items: cat.items.map((it) => ({ id: it.id, booth: it.booth, name: it.name, note: it.note, price: it.cents / 100, left: shopLeft(it, held) })),
     });
   }
@@ -530,6 +532,7 @@ function shopCode() {
 }
 
 async function shopCheckout(request, env, url) {
+  if (env.SHOP_DEMO === '1') return json({ error: 'This is a preview with demo items, so checkout is turned off.' }, 503);
   if (!env.SQUARE_ACCESS_TOKEN) return json({ error: 'The online shop isn’t open yet.' }, 503);
   const body = await request.json().catch(() => ({}));
   const name = clean(body.name, 80);
