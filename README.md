@@ -9,6 +9,8 @@ Website and volunteer tools for the Montclare Children's School Holiday Fair (*Y
 | Face-painting staff console (PIN) | https://holidayfair.montclarepa.org/facepainting/staff/ |
 | 50/50 raffle (buyers) | https://holidayfair.montclarepa.org/raffle/ |
 | Raffle staff console (PIN) | https://holidayfair.montclarepa.org/raffle/staff/ |
+| Holiday shop cart and orders (buyers) | https://holidayfair.montclarepa.org/shop/ |
+| Shop pickup console (PIN) | https://holidayfair.montclarepa.org/shop/staff/ |
 
 ## How it is wired
 
@@ -19,8 +21,9 @@ Website and volunteer tools for the Montclare Children's School Holiday Fair (*Y
 
 ## Files
 
-- `public/` – fair page, banner and booth art, waitlist and raffle pages, staff consoles, Terms and Privacy
-- `public/_worker.js` – Pages advanced-mode worker: API under `/api/fp/*` (join, live queue, staff actions, wait estimates, optional Twilio texts) and `/api/raffle/*` (orders, staff payments, drawing); never served as a file
+- `public/` – fair page, banner and booth art, waitlist, raffle and shop pages, staff consoles, Terms and Privacy
+- `public/shop/items.json` – the online shop's catalog (items, prices, stock, open or closed)
+- `public/_worker.js` – Pages advanced-mode worker: API under `/api/fp/*` (join, live queue, staff actions, wait estimates, optional Twilio texts) `/api/raffle/*` (orders, staff payments, drawing) and `/api/shop/*` (catalog, Square checkout, pickup); never served as a file
 - `schema.sql` – waitlist and raffle tables (safe to re-run)
 - `migrations/` – one-off changes for databases created before a table changed
 - `wrangler.jsonc` – Pages config: painters, minutes per child, raffle bundles, Square app settings
@@ -76,10 +79,48 @@ A database created before raffle orders stored Square transaction IDs needs this
 npx wrangler d1 execute montclare-holiday-fair --remote --file=migrations/0001_raffle_payment_ref.sql
 ```
 
+## Holiday shop
+
+Families add Swag and Bracelets & Giveaways items to a cart on the fair page, then pay on `/shop/` through a Square payment link (Checkout API). Each order gets a pickup code like `SNOW-4821`. When the buyer returns from Square, or whenever the pickup console refreshes, the site asks Square whether the order was paid. There's no webhook to set up.
+
+Turn it on with the PA's production access token (developer.squareup.com → the app → Credentials → Production):
+
+```bash
+CLOUDFLARE_ACCOUNT_ID=0ca3057b0381d0117295beb8b28506db npx wrangler pages secret put SQUARE_ACCESS_TOKEN --project-name montclare-holiday-fair
+npm run deploy
+```
+
+Payments go to the account's first active location, or set `SQUARE_LOCATION_ID` under `vars`. For testing against Square's sandbox, set `SQUARE_ENV` to `sandbox` and use a sandbox token.
+
+The catalog is `public/shop/items.json`; edit it and run `npm run deploy`:
+
+```json
+{
+  "open": true,
+  "pickup": "Pick up your order at the Holiday Marketplace on Saturday, December 5. Show your order code.",
+  "items": [
+    { "id": "tote", "booth": "swag", "name": "Holiday Fair tote", "price": 12, "stock": 20 },
+    { "id": "bracelet", "booth": "bracelets", "name": "Snowflake bracelet", "price": 3, "note": "Glow-in-the-dark" }
+  ]
+}
+```
+
+- `booth` is `swag` or `bracelets`, the tile the item is listed under. `id` must never change once orders exist.
+- `stock` is optional. Paid orders count against it, and so do unpaid ones for 30 minutes while the buyer is on Square's page. `"sold_out": true` stops sales of one item.
+- `"open": false` closes online sales; items then show as "At the fair".
+- Prices and stock are checked on the server, so editing the page in a browser can't change what Square charges.
+
+A database created before the shop existed needs this once:
+
+```bash
+npx wrangler d1 execute montclare-holiday-fair --remote --file=migrations/0002_shop_orders.sql
+```
+
 ## After the fair
 
 - Face-painting staff console → **Delete all entries**. The SMS terms promise parents their numbers are deleted after the event.
 - Raffle staff console → **Delete all raffle entries**, after the prize is paid out and the totals are recorded.
+- Shop pickup console → **Delete all shop orders**, once everything is picked up. Square keeps its own records.
 
 ## Local testing
 
