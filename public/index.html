@@ -57,7 +57,7 @@ a:focus-visible, .btn:focus-visible { outline: 3px solid var(--gold); outline-of
 /* Hero */
 .hero { background: var(--night); color: var(--night-ink); }
 .hero .banner { margin: 0 auto; max-width: 1600px; line-height: 0; }
-.hero .banner img { display: block; width: 100%; height: auto; }
+.hero .banner img { display: block; width: 100%; height: auto; aspect-ratio: 1916 / 493; object-fit: cover; object-position: 50% 16%; }
 
 /* Activities */
 section.activities { padding-block: 0 64px; }
@@ -97,18 +97,23 @@ section.raffle-top { padding-block: 40px 56px; }
 /* Items sold online, listed under their marketplace tile */
 .section-head-text { display: grid; gap: 8px; }
 .market .pickup { color: var(--muted); }
-.buy { list-style: none; padding: 12px 0 0; margin: 0; display: grid; gap: 12px; border-top: 1px solid var(--line); }
+.buy { container-type: inline-size; list-style: none; padding: 12px 0 0; margin: 0; display: grid; gap: 12px; border-top: 1px solid var(--line); }
 .tiles .buy li { background: none; border: 0; border-radius: 0; padding: 0; display: grid; grid-template-columns: 1fr auto; align-items: center; gap: 2px 12px; }
 .buy .name { font-weight: 600; line-height: 1.3; }
 .buy .note { grid-column: 1; font-size: 0.85rem; color: var(--muted); line-height: 1.35; }
 .buy .price { color: var(--berry); font-weight: 700; }
-.buy .add { grid-row: 1 / span 2; grid-column: 2; font: inherit; font-size: 0.92rem; font-weight: 700; padding: 8px 16px; border-radius: 999px; border: 1.5px solid var(--berry); background: var(--berry); color: var(--on-berry); cursor: pointer; }
-.buy .add.in { background: transparent; color: var(--berry); }
-.buy .add:focus-visible { outline: 3px solid var(--gold); outline-offset: 2px; }
+.buy .pick { grid-row: 1 / span 2; grid-column: 2; }
+.buy .add { font: inherit; font-size: 0.92rem; font-weight: 700; padding: 8px 16px; border-radius: 999px; border: 1.5px solid var(--berry); background: var(--berry); color: var(--on-berry); cursor: pointer; }
+.buy .qty { display: flex; align-items: center; gap: 8px; }
+.buy .qty button { font: inherit; font-size: 1.1rem; font-weight: 700; width: 36px; height: 36px; border-radius: 50%; border: 1.5px solid var(--berry); background: transparent; color: var(--berry); cursor: pointer; line-height: 1; }
+.buy .qty button:disabled { opacity: 0.35; cursor: default; }
+.buy .qty span { min-width: 1.5em; text-align: center; font-variant-numeric: tabular-nums; font-weight: 700; }
+.buy button:focus-visible { outline: 3px solid var(--gold); outline-offset: 2px; }
 .buy .sold { grid-row: 1 / span 2; grid-column: 2; font-size: 0.88rem; font-weight: 700; color: var(--muted); }
-@media (max-width: 560px) {
+/* Narrow tile: controls go under the name instead of beside it. */
+@container (max-width: 260px) {
   .tiles .buy li { grid-template-columns: 1fr; }
-  .buy .add, .buy .sold { grid-row: auto; grid-column: 1; justify-self: start; margin-top: 6px; }
+  .buy .pick, .buy .sold { grid-row: auto; grid-column: 1; justify-self: start; margin-top: 6px; }
 }
 .cartbar { position: fixed; left: 0; right: 0; bottom: 0; z-index: 20; background: var(--night); color: var(--night-ink); padding-bottom: env(safe-area-inset-bottom, 0px); box-shadow: 0 -4px 16px rgb(0 0 0 / 0.18); }
 .cartbar .wrap { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding-block: 12px; }
@@ -312,19 +317,33 @@ footer .wrap { padding-block: 28px; font-size: 0.85rem; color: var(--muted); dis
       var s = document.createElement('span'); s.className = 'sold'; s.textContent = it.left === 0 ? 'Sold out' : 'At the fair'; li.appendChild(s);
       return li;
     }
-    var b = document.createElement('button'); b.type = 'button'; b.className = 'add';
-    function label() {
-      var q = readCart()[it.id] || 0;
-      b.textContent = q ? 'In cart · ' + q : 'Add';
-      b.classList.toggle('in', !!q);
-      b.setAttribute('aria-label', q ? it.name + ', ' + q + ' in cart. Add one more' : 'Add ' + it.name + ' to cart');
-    }
-    b.addEventListener('click', function () {
-      var c = readCart(), q = (c[it.id] || 0) + 1;
+    // "Add" until the item is in the cart, then a − qty + stepper (− at 1 takes it out of the cart).
+    var box = document.createElement('div'); box.className = 'pick'; li.appendChild(box);
+    function setQty(q) {
+      var c = readCart();
       if (it.left !== null && q > it.left) return;
-      c[it.id] = q; writeCart(c); label(); renderCartBar();
-    });
-    label(); li.appendChild(b);
+      if (q > 0) c[it.id] = q; else delete c[it.id];
+      writeCart(c); draw(); renderCartBar();
+    }
+    function btn(cls, text, aria, fn) {
+      var b = document.createElement('button'); b.type = 'button'; b.className = cls; b.textContent = text;
+      b.setAttribute('aria-label', aria); b.addEventListener('click', fn); return b;
+    }
+    function draw() {
+      var q = readCart()[it.id] || 0, focused = box.contains(document.activeElement) && document.activeElement.className;
+      box.textContent = ''; box.className = q ? 'pick qty' : 'pick';
+      if (!q) { box.appendChild(btn('add', 'Add', 'Add ' + it.name + ' to cart', function () { setQty(1); })); }
+      else {
+        box.appendChild(btn('minus', '−', 'One less ' + it.name, function () { setQty(q - 1); }));
+        var n = document.createElement('span'); n.textContent = q; n.setAttribute('aria-live', 'polite');
+        n.setAttribute('aria-label', q + ' ' + it.name + ' in cart'); box.appendChild(n);
+        var plus = btn('plus', '+', 'One more ' + it.name, function () { setQty(q + 1); });
+        plus.disabled = it.left !== null && q >= it.left; box.appendChild(plus);
+      }
+      // Keep keyboard focus on the same control after redrawing.
+      if (focused) { var f = box.querySelector('.' + focused) || box.querySelector('button:not([disabled])'); if (f) f.focus(); }
+    }
+    draw();
     return li;
   }
   fetch('/api/shop/items', { cache: 'no-store' })
