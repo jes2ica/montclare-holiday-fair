@@ -10,7 +10,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Young+Serif&family=Figtree:wght@400;500;600;700&display=swap">
 <style>
-/* Layout: the Yeti, Set, Snow! banner art, then the 50/50 raffle card, the 1st-floor entry cards, the 2nd-floor activity cards and the Gym 2 marketplace tiles (Swag and Bracelets list items from the online shop; Bracelets links to the Montclare Gives Back × Second Chance Toys note below the tiles; with a cart bar that leads to /shop/). */
+/* Layout: the Yeti, Set, Snow! banner art, then the 50/50 raffle card, the 1st-floor entry cards, the 2nd-floor activity cards and the Gym 2 marketplace tiles (Swag and Bracelets list items from the online shop; Bracelets has a short Second Chance Toys summary that opens the full Montclare Gives Back note below the tiles; with a cart bar that leads to /shop/). */
 :root {
   --night: #1d2350;        /* hero band */
   --night-ink: #f4f3ff;
@@ -99,8 +99,12 @@ section.raffle-top { padding-block: 40px 56px; }
 .section-head-text { display: grid; gap: 8px; }
 .market .pickup { color: var(--muted); }
 .tiles .blurb { color: var(--muted); font-size: 0.95rem; line-height: 1.5; }
-.gives-link { font-size: 0.92rem; color: var(--muted); line-height: 1.4; }
-.gives-link a { color: var(--berry); font-weight: 700; }
+.gives-toggle { font: inherit; font-size: 0.95rem; text-align: left; color: var(--muted); line-height: 1.5; background: var(--berry-soft); border: 1.5px solid var(--berry); border-radius: 10px; padding: 12px 14px; display: grid; gap: 6px; cursor: pointer; }
+.gives-toggle:hover { background: var(--paper); }
+.gives-toggle:focus-visible { outline: 3px solid var(--gold); outline-offset: 2px; }
+.gives-more { color: var(--berry); }
+.gives-more::after { content: " ↓"; }
+.gives-toggle[aria-expanded="true"] .gives-more::after { content: " ↑"; }
 .gives { margin-top: 24px; background: var(--paper); border: 1px solid var(--line); border-radius: 10px; padding: clamp(22px, 4vw, 36px); display: grid; gap: 14px; scroll-margin-top: 16px; }
 .gives .eyebrow { color: var(--berry); }
 .gives h3 { font-size: clamp(1.4rem, 3vw, 1.8rem); }
@@ -250,7 +254,10 @@ footer .wrap { padding-block: 28px; font-size: 0.85rem; color: var(--muted); dis
         <li>
           <img class="art" src="/booths/bracelets.jpg" width="362" height="277" alt="" loading="lazy">
           <h3>Bracelets &amp; Giveaways</h3>
-          <p class="gives-link">Your toy donation goes to Second Chance Toys. <a href="#gives-back">Learn more</a></p>
+          <button type="button" class="gives-toggle" id="gives-toggle" aria-expanded="false" aria-controls="gives-back">
+            <span>Your admission toy gets a second chance! Montclare Gives Back donates every gently used plastic toy to Second Chance Toys for children in need. Collection runs through December 9.</span>
+            <b class="gives-more">Read more</b>
+          </button>
           <ul class="buy" data-booth="bracelets" hidden></ul>
         </li>
         <li>
@@ -258,7 +265,7 @@ footer .wrap { padding-block: 28px; font-size: 0.85rem; color: var(--muted); dis
           <h3>Wow Wall Photo Moment</h3>
         </li>
       </ul>
-      <div class="gives" id="gives-back">
+      <div class="gives" id="gives-back" hidden>
         <p class="eyebrow">Montclare Gives Back × Second Chance Toys</p>
         <h3>Give a toy a second chance</h3>
         <p>This year, Montclare Gives Back is teaming up with Second Chance Toys for our Holiday Fair, Yeti, Set, Snow! Admission to the fair is a donation of gently used plastic toys, which will be cleaned up and passed along to children in need, giving each toy a second chance to bring someone joy this holiday season.</p>
@@ -313,6 +320,17 @@ footer .wrap { padding-block: 28px; font-size: 0.85rem; color: var(--muted); dis
       })
       .catch(function () { prize.textContent = ''; plbl.textContent = 'See the pot on the raffle page.'; });
   }
+  // Bracelets tile: the bordered summary opens the full Montclare Gives Back note under the tiles.
+  var givesBtn = document.getElementById('gives-toggle'), gives = document.getElementById('gives-back');
+  function showGives(open, scroll) {
+    gives.hidden = !open;
+    givesBtn.setAttribute('aria-expanded', String(open));
+    givesBtn.querySelector('.gives-more').textContent = open ? 'Show less' : 'Read more';
+    if (open && scroll) gives.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }
+  givesBtn.addEventListener('click', function () { showGives(gives.hidden, true); });
+  if (location.hash === '#gives-back') showGives(true, true);
+
   // Online shop: items from /api/shop/items, listed under their booth's tile. The cart lives in this browser
   // ('shop-cart', {item id: qty}) and is paid on /shop/.
   var CART = 'shop-cart', shopItems = [];
