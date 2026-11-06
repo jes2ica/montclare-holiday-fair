@@ -10,7 +10,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Young+Serif&family=Figtree:wght@400;500;600;700&display=swap">
 <style>
-/* Layout: the Yeti, Set, Snow! banner art, then the 50/50 raffle card, the 1st-floor entry cards, the 2nd-floor activity cards and the Gym 2 marketplace tiles. */
+/* Layout: the Yeti, Set, Snow! banner art, then the 50/50 raffle card, the 1st-floor entry cards, the 2nd-floor activity cards and the Gym 2 marketplace tiles (Swag opens a dialog previewing the collection). */
 :root {
   --night: #1d2350;        /* hero band */
   --night-ink: #f4f3ff;
@@ -104,6 +104,46 @@ footer .wrap { padding-block: 28px; font-size: 0.85rem; color: var(--muted); dis
   .grid { grid-template-columns: 1fr; }
   .tiles { grid-template-columns: 1fr; }
   .activity, .tiles > li { padding: 22px; }
+}
+/* Swag preview: a dialog listing the collection; color swatches switch the photo. */
+.tiles .btn { font: inherit; font-weight: 700; border: 0; cursor: pointer; }
+.swag { width: min(1000px, calc(100vw - 32px)); max-height: calc(100dvh - 32px); padding: 0; border: 0; border-radius: 14px; background: var(--snow); color: var(--ink); box-shadow: 0 20px 60px rgb(0 0 0 / 0.35); }
+.swag::backdrop { background: rgb(15 18 45 / 0.6); }
+.swag[open] { display: flex; flex-direction: column; }
+.swag-head { display: flex; justify-content: space-between; align-items: center; gap: 16px; padding: 20px 24px; background: var(--night); color: var(--night-ink); }
+.swag-head .eyebrow { color: var(--gold); }
+.swag-head h2 { font-size: clamp(1.5rem, 4vw, 2.1rem); }
+.swag-close { font: inherit; font-size: 1.8rem; line-height: 1; width: 44px; height: 44px; flex: none; border-radius: 50%; border: 0; background: rgb(255 255 255 / 0.12); color: inherit; cursor: pointer; }
+.swag-close:focus-visible, .swatch:focus-visible { outline: 3px solid var(--gold); outline-offset: 2px; }
+.swag-body { overflow-y: auto; padding: 24px; display: grid; gap: 28px; }
+.products { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(auto-fill, minmax(210px, 1fr)); gap: 16px; }
+.product { background: var(--paper); border: 1px solid var(--line); border-radius: 10px; padding: 14px; display: grid; gap: 8px; align-content: start; }
+.product-img { background: #fff; border-radius: 8px; height: 190px; display: grid; place-items: center; overflow: hidden; }
+.product-img img { max-width: 100%; max-height: 180px; object-fit: contain; }
+.product h4 { margin: 4px 0 0; font-size: 1.05rem; display: flex; justify-content: space-between; gap: 8px; }
+.product .price { color: var(--berry); }
+.product p { margin: 0; font-size: 0.92rem; color: var(--muted); line-height: 1.45; }
+.product .meta, .swag-notes .meta { font-size: 0.85rem; font-weight: 600; }
+.swatches { display: flex; align-items: center; gap: 8px; }
+.swatch { width: 26px; height: 26px; border-radius: 50%; border: 1px solid #9a9db3; background: var(--sw); padding: 0; cursor: pointer; }
+.swatch[aria-pressed="true"] { box-shadow: 0 0 0 2px var(--paper), 0 0 0 4px var(--berry); }
+.swatch-name { font-size: 0.85rem; color: var(--muted); }
+.swag-notes { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+.swag-notes section { background: var(--paper); border: 1px solid var(--line); border-radius: 10px; padding: 18px 20px; display: grid; gap: 8px; align-content: start; }
+.swag-notes h3 { font-size: 1.2rem; }
+.swag-notes p { margin: 0; color: var(--muted); line-height: 1.5; }
+.details { margin: 0; padding-left: 18px; display: grid; gap: 4px; color: var(--muted); }
+.details .zelle { color: var(--ink); font-weight: 700; overflow-wrap: anywhere; }
+@media (max-width: 640px) {
+  .swag { width: 100vw; max-width: 100vw; height: 100dvh; max-height: 100dvh; border-radius: 0; }
+  .swag-head { padding: 14px 16px; }
+  .swag-body { padding: 16px; }
+  .products { grid-template-columns: 1fr 1fr; gap: 10px; }
+  .product { padding: 10px; }
+  .product-img { height: 140px; }
+  .product-img img { max-height: 130px; }
+  .product h4 { flex-direction: column; gap: 0; }
+  .swag-notes { grid-template-columns: 1fr; }
 }
 </style>
 </head>
@@ -215,6 +255,7 @@ footer .wrap { padding-block: 28px; font-size: 0.85rem; color: var(--muted); dis
           <img class="art" src="/booths/swag.jpg" width="362" height="277" alt="" loading="lazy">
           <h3>Swag</h3>
           <p class="blurb">Gear up in Cool Croc style! Shop the new Montclare Swag collection for kids and grown-ups in Gym 2, then head downstairs for favorite older styles and a decorating station where kids can make their gear their own. Montclare Swag makes an easy holiday gift for grandparents, teachers and little crocs alike.</p>
+          <button type="button" class="btn" id="swag-open">Preview the collection</button>
         </li>
         <li>
           <img class="art" src="/booths/bracelets.jpg" width="362" height="277" alt="" loading="lazy">
@@ -236,6 +277,84 @@ footer .wrap { padding-block: 28px; font-size: 0.85rem; color: var(--muted); dis
     <span>Montclare Children's School Holiday Fair · Organized by the holiday fair committee</span>
   </div>
 </footer>
+
+<dialog class="swag" id="swag" aria-labelledby="swag-title">
+  <div class="swag-head">
+    <div><p class="eyebrow">Gym 2 · Holiday Marketplace</p><h2 id="swag-title">Montclare Swag</h2></div>
+    <button type="button" class="swag-close" id="swag-close" aria-label="Close">×</button>
+  </div>
+  <div class="swag-body">
+    <ul class="products">
+          <li class="product">
+            <div class="product-img"><img src="/swag/sweatshirt-blue.png" alt="Kids sweatshirt, blue" loading="lazy"></div>
+            <h4>Kids sweatshirt <span class="price">$40</span></h4>
+            <p>Cozy Cool Croc hooded sweatshirt for everyday school spirit.</p>
+            <div class="swatches" role="group" aria-label="Kids sweatshirt colors"><button type="button" class="swatch" style="--sw: #2f55c8" data-img="/swag/sweatshirt-blue.png" aria-label="Blue" aria-pressed="true" title="Blue"></button><button type="button" class="swatch" style="--sw: #ffffff" data-img="/swag/sweatshirt-white.png" aria-label="White" aria-pressed="false" title="White"></button><span class="swatch-name">Blue</span></div>
+            <p class="meta">Sizes 3T–5T</p>
+          </li>
+          <li class="product">
+            <div class="product-img"><img src="/swag/sweatpants-blue.png" alt="Kids sweatpants, blue" loading="lazy"></div>
+            <h4>Kids sweatpants <span class="price">$35</span></h4>
+            <p>Soft joggers that pair with the sweatshirt.</p>
+            <div class="swatches" role="group" aria-label="Kids sweatpants colors"><button type="button" class="swatch" style="--sw: #2f55c8" data-img="/swag/sweatpants-blue.png" aria-label="Blue" aria-pressed="true" title="Blue"></button><button type="button" class="swatch" style="--sw: #b9bcc4" data-img="/swag/sweatpants-grey.png" aria-label="Grey" aria-pressed="false" title="Grey"></button><span class="swatch-name">Blue</span></div>
+            <p class="meta">Sizes 2T–5T</p>
+          </li>
+          <li class="product">
+            <div class="product-img"><img src="/swag/polo-blue.png" alt="Kids polo, blue" loading="lazy"></div>
+            <h4>Kids polo <span class="price">$35</span></h4>
+            <p>A classic Montclare polo for picture day and beyond.</p>
+            <div class="swatches" role="group" aria-label="Kids polo colors"><button type="button" class="swatch" style="--sw: #2f55c8" data-img="/swag/polo-blue.png" aria-label="Blue" aria-pressed="true" title="Blue"></button><button type="button" class="swatch" style="--sw: #ffffff" data-img="/swag/polo-white.png" aria-label="White" aria-pressed="false" title="White"></button><span class="swatch-name">Blue</span></div>
+            <p class="meta">Sizes 3T–5T</p>
+          </li>
+          <li class="product">
+            <div class="product-img"><img src="/swag/tee-blue.png" alt="Kids tee, blue" loading="lazy"></div>
+            <h4>Kids tee <span class="price">$25</span></h4>
+            <p>Everyday Cool Croc tee.</p>
+            <div class="swatches" role="group" aria-label="Kids tee colors"><button type="button" class="swatch" style="--sw: #2f55c8" data-img="/swag/tee-blue.png" aria-label="Blue" aria-pressed="true" title="Blue"></button><button type="button" class="swatch" style="--sw: #a7d8f0" data-img="/swag/tee-light-blue.png" aria-label="Light blue" aria-pressed="false" title="Light blue"></button><button type="button" class="swatch" style="--sw: #ffffff" data-img="/swag/tee-white.png" aria-label="White" aria-pressed="false" title="White"></button><span class="swatch-name">Blue</span></div>
+            <p class="meta">Sizes 2T–5T</p>
+          </li>
+          <li class="product">
+            <div class="product-img"><img src="/swag/shorts-blue.png" alt="Kids shorts, blue" loading="lazy"></div>
+            <h4>Kids shorts <span class="price">$25</span></h4>
+            <p>Comfy shorts for active play.</p>
+            <div class="swatches" role="group" aria-label="Kids shorts colors"><button type="button" class="swatch" style="--sw: #2f55c8" data-img="/swag/shorts-blue.png" aria-label="Blue" aria-pressed="true" title="Blue"></button><button type="button" class="swatch" style="--sw: #b9bcc4" data-img="/swag/shorts-grey.png" aria-label="Grey" aria-pressed="false" title="Grey"></button><span class="swatch-name">Blue</span></div>
+            <p class="meta">Sizes 3T–5T</p>
+          </li>
+          <li class="product">
+            <div class="product-img"><img src="/swag/adult-sweatshirt-blue.png" alt="Adult sweatshirt, blue" loading="lazy"></div>
+            <h4>Adult sweatshirt <span class="price">$50</span></h4>
+            <p>The grown-up version, so the whole family can match.</p>
+            <div class="swatches" role="group" aria-label="Adult sweatshirt colors"><button type="button" class="swatch" style="--sw: #2f55c8" data-img="/swag/adult-sweatshirt-blue.png" aria-label="Blue" aria-pressed="true" title="Blue"></button><button type="button" class="swatch" style="--sw: #ffffff" data-img="/swag/adult-sweatshirt-white.png" aria-label="White" aria-pressed="false" title="White"></button><span class="swatch-name">Blue</span></div>
+            <p class="meta">Sizes XS–XL</p>
+          </li>
+          <li class="product">
+            <div class="product-img"><img src="/swag/water-bottle.png" alt="Water bottle" loading="lazy"></div>
+            <h4>Water bottle <span class="price">$12</span></h4>
+            <p>Montclare water bottle, about 18 oz. Straw and spout option.</p>
+          </li>
+          <li class="product">
+            <div class="product-img"><img src="/swag/hair-clip-blue.jpg" alt="Hair clip" loading="lazy"></div>
+            <h4>Hair clip <span class="price">$10</span></h4>
+            <p>Cool Croc hair clip. One size.</p>
+          </li>
+    </ul>
+    <div class="swag-notes">
+      <section>
+        <h3>Older styles + decorating · Downstairs</h3>
+        <p class="meta">Classroom to be announced</p>
+        <p>Shop older Montclare styles, then stop by our decorating station to personalize them. Families can also bring new items from Gym 2 down to decorate as an add-on. Decorating options and pricing coming soon.</p>
+      </section>
+      <section>
+        <h3>Purchase details</h3>
+        <ul class="details">
+          <li><b>When:</b> Saturday, Dec 5, 10am–12pm</li>
+          <li><b>Payment:</b> Zelle to <span class="zelle">treasurer@montclarepa.org</span></li>
+          <li>Take it home the same day. Everything is in stock at the fair!</li>
+        </ul>
+      </section>
+    </div>
+  </div>
+</dialog>
 
 <script>
 (function () {
@@ -265,6 +384,21 @@ footer .wrap { padding-block: 28px; font-size: 0.85rem; color: var(--muted); dis
       })
       .catch(function () { prize.textContent = ''; plbl.textContent = 'See the pot on the raffle page.'; });
   }
+  // Swag preview dialog.
+  var swag = document.getElementById('swag');
+  document.getElementById('swag-open').addEventListener('click', function () { swag.showModal(); });
+  document.getElementById('swag-close').addEventListener('click', function () { swag.close(); });
+  swag.addEventListener('click', function (e) { if (e.target === swag) swag.close(); }); // click on the backdrop
+  swag.querySelectorAll('.swatch').forEach(function (b) {
+    b.addEventListener('click', function () {
+      var card = b.closest('.product'), img = card.querySelector('.product-img img');
+      card.querySelectorAll('.swatch').forEach(function (x) { x.setAttribute('aria-pressed', String(x === b)); });
+      img.src = b.dataset.img;
+      img.alt = card.querySelector('h4').firstChild.textContent.trim() + ', ' + b.getAttribute('aria-label').toLowerCase();
+      card.querySelector('.swatch-name').textContent = b.getAttribute('aria-label');
+    });
+  });
+
   refresh(); refreshRaffle();
   setInterval(function () { if (!document.hidden) { refresh(); refreshRaffle(); } }, 15000);
 
