@@ -82,10 +82,10 @@ section.activities .wrap { border-top: 1px solid var(--line); padding-top: 56px;
 /* Holiday Marketplace */
 section.market { padding-block: 0 64px; }
 section.market .wrap { border-top: 1px solid var(--line); padding-top: 56px; }
-.tiles { display: grid; grid-template-columns: repeat(auto-fill, minmax(190px, 1fr)); gap: 16px; list-style: none; padding: 0; margin: 0; }
-.tiles li { background: var(--paper); border: 1px solid var(--line); border-radius: 10px; padding: 22px; display: grid; gap: 12px; align-content: start; min-width: 0; }
+.tiles { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; list-style: none; padding: 0; margin: 0; }
+.tiles > li { background: var(--paper); border: 1px solid var(--line); border-radius: 10px; padding: 28px; display: grid; gap: 14px; align-content: start; min-width: 0; }
 .tiles .icon { width: 44px; height: 44px; border-radius: 50%; display: grid; place-items: center; background: var(--berry-soft); color: var(--berry); }
-.tiles h3 { font-size: 1.3rem; }
+.tiles h3 { font-size: 1.65rem; }
 section.raffle-top { padding-block: 40px 56px; }
 .raffle .art { width: 200px; }
 .section-head.with-art { grid-template-columns: 180px 1fr; align-items: center; gap: 20px; }
@@ -99,8 +99,9 @@ section.raffle-top { padding-block: 40px 56px; }
 .section-head-text { display: grid; gap: 8px; }
 .market .pickup { color: var(--muted); }
 .tiles .blurb { color: var(--muted); font-size: 0.95rem; line-height: 1.5; }
-.gives-toggle { font: inherit; font-size: 0.95rem; text-align: left; color: var(--muted); line-height: 1.5; background: var(--berry-soft); border: 1.5px solid var(--berry); border-radius: 10px; padding: 12px 14px; display: grid; gap: 6px; cursor: pointer; }
-.gives-toggle:hover { background: var(--paper); }
+.tiles > li.gives-tile { border: 2px solid var(--berry); cursor: pointer; }
+.tiles > li.gives-tile:hover { box-shadow: 0 6px 20px rgb(0 0 0 / 0.10); }
+.gives-toggle { font: inherit; font-size: 0.95rem; text-align: left; color: var(--muted); line-height: 1.5; background: none; border: 0; padding: 0; display: grid; gap: 6px; cursor: pointer; }
 .gives-toggle:focus-visible { outline: 3px solid var(--gold); outline-offset: 2px; }
 .gives-more { color: var(--berry); }
 .gives-more::after { content: " ↓"; }
@@ -137,8 +138,8 @@ footer .wrap { padding-block: 28px; font-size: 0.85rem; color: var(--muted); dis
 
 @media (max-width: 760px) {
   .grid { grid-template-columns: 1fr; }
-  .tiles { grid-template-columns: 1fr 1fr; }
-  .activity { padding: 22px; }
+  .tiles { grid-template-columns: 1fr; }
+  .activity, .tiles > li { padding: 22px; }
 }
 </style>
 </head>
@@ -251,7 +252,7 @@ footer .wrap { padding-block: 28px; font-size: 0.85rem; color: var(--muted); dis
           <p class="blurb">Gear up in Cool Croc style! Shop the new Montclare Swag collection for kids and grown-ups in Gym 2, then head downstairs for favorite older styles and a decorating station where kids can make their gear their own. Montclare Swag makes an easy holiday gift for grandparents, teachers and little crocs alike.</p>
           <ul class="buy" data-booth="swag" hidden></ul>
         </li>
-        <li>
+        <li class="gives-tile">
           <img class="art" src="/booths/bracelets.jpg" width="362" height="277" alt="" loading="lazy">
           <h3>Bracelets &amp; Giveaways</h3>
           <button type="button" class="gives-toggle" id="gives-toggle" aria-expanded="false" aria-controls="gives-back">
@@ -328,7 +329,10 @@ footer .wrap { padding-block: 28px; font-size: 0.85rem; color: var(--muted); dis
     givesBtn.querySelector('.gives-more').textContent = open ? 'Show less' : 'Read more';
     if (open && scroll) gives.scrollIntoView({ behavior: 'smooth', block: 'start' });
   }
-  givesBtn.addEventListener('click', function () { showGives(gives.hidden, true); });
+  givesBtn.closest('li').addEventListener('click', function (e) {
+    if (e.target.closest('button, a') && !givesBtn.contains(e.target)) return; // shop buttons inside the card
+    showGives(gives.hidden, true);
+  });
   if (location.hash === '#gives-back') showGives(true, true);
 
   // Online shop: items from /api/shop/items, listed under their booth's tile. The cart lives in this browser
