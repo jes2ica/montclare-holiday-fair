@@ -24,7 +24,7 @@
     "SQUARE_CALLBACK_URL": "https://holidayfair.montclarepa.org/raffle/staff/"
   },
   "env": {
-    // Preview deploys (`npm run preview`): demo shop items, checkout off. Same database as production.
+    // Preview deploys (`npm run preview`). Same database as production.
     "preview": {
       "d1_databases": [
         {
@@ -36,8 +36,7 @@
       "vars": {
         "PAINTERS": "1",
         "MINUTES_PER_CHILD": "10",
-        "RAFFLE_PRICES": "1:5,5:20,15:50",
-        "SHOP_DEMO": "1"
+        "RAFFLE_PRICES": "1:5,5:20,15:50"
       }
     }
   }
