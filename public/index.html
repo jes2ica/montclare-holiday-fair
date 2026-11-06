@@ -10,7 +10,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Young+Serif&family=Figtree:wght@400;500;600;700&display=swap">
 <style>
-/* Layout: the Yeti, Set, Snow! banner art, then the 50/50 raffle card, the 1st-floor entry cards, the 2nd-floor activity cards and the Gym 2 marketplace tiles (Swag and Bracelets list items from the online shop, with a cart bar that leads to /shop/). */
+/* Layout: the Yeti, Set, Snow! banner art, then the 50/50 raffle card, the 1st-floor entry cards, the 2nd-floor activity cards and the Gym 2 marketplace tiles (Swag and Bracelets list items from the online shop; Bracelets links to the Montclare Gives Back × Second Chance Toys note below the tiles; with a cart bar that leads to /shop/). */
 :root {
   --night: #1d2350;        /* hero band */
   --night-ink: #f4f3ff;
@@ -98,6 +98,13 @@ section.raffle-top { padding-block: 40px 56px; }
 /* Items sold online, listed under their marketplace tile */
 .section-head-text { display: grid; gap: 8px; }
 .market .pickup { color: var(--muted); }
+.gives-link { font-size: 0.92rem; color: var(--muted); line-height: 1.4; }
+.gives-link a { color: var(--berry); font-weight: 700; }
+.gives { margin-top: 24px; background: var(--paper); border: 1px solid var(--line); border-radius: 10px; padding: clamp(22px, 4vw, 36px); display: grid; gap: 14px; scroll-margin-top: 16px; }
+.gives .eyebrow { color: var(--berry); }
+.gives h3 { font-size: clamp(1.4rem, 3vw, 1.8rem); }
+.gives p { max-width: 70ch; line-height: 1.6; }
+.gives .gives-note { background: var(--berry-soft); border-radius: 8px; padding: 12px 16px; }
 .buy { container-type: inline-size; list-style: none; padding: 12px 0 0; margin: 0; display: grid; gap: 12px; border-top: 1px solid var(--line); }
 .tiles .buy li { background: none; border: 0; border-radius: 0; padding: 0; display: grid; grid-template-columns: 1fr auto; align-items: center; gap: 2px 12px; }
 .buy .name { font-weight: 600; line-height: 1.3; }
@@ -241,6 +248,7 @@ footer .wrap { padding-block: 28px; font-size: 0.85rem; color: var(--muted); dis
         <li>
           <img class="art" src="/booths/bracelets.jpg" width="362" height="277" alt="" loading="lazy">
           <h3>Bracelets &amp; Giveaways</h3>
+          <p class="gives-link">Your toy donation goes to Second Chance Toys. <a href="#gives-back">Learn more</a></p>
           <ul class="buy" data-booth="bracelets" hidden></ul>
         </li>
         <li>
@@ -248,6 +256,15 @@ footer .wrap { padding-block: 28px; font-size: 0.85rem; color: var(--muted); dis
           <h3>Wow Wall Photo Moment</h3>
         </li>
       </ul>
+      <div class="gives" id="gives-back">
+        <p class="eyebrow">Montclare Gives Back × Second Chance Toys</p>
+        <h3>Give a toy a second chance</h3>
+        <p>This year, Montclare Gives Back is teaming up with Second Chance Toys for our Holiday Fair, Yeti, Set, Snow! Admission to the fair is a donation of gently used plastic toys, which will be cleaned up and passed along to children in need, giving each toy a second chance to bring someone joy this holiday season.</p>
+        <p>Plastic toys often look almost new even after years of play, yet many end up in landfills, where they take up space and never break down. At the same time, many children across the country have few or no toys of their own. Second Chance Toys bridges that gap by rescuing gently used plastic toys and donating them to community organizations that serve children in need.</p>
+        <p class="gives-note"><b>Can't make it to the fair?</b> Toy collection will continue through December 9, so there's still time to give a toy a second chance!</p>
+        <p>Montclare Gives Back is a parent-led committee dedicated to helping our families make a difference in the wider community. Throughout the school year, we host drives that collect coats, books, food, toys, and other essentials for those in need. We're proud to partner with organizations such as NY Cares, Project Cicero, Homeward, Second Chance Toys and local shelters to make sure every donation reaches the people who need it most.</p>
+        <p>None of this would be possible without the kindness and generosity of Montclare families. Each drive is a chance for our children to see firsthand how small acts of giving add up, and to learn that caring for our neighbors is part of being a community.</p>
+      </div>
     </div>
   </section>
 
