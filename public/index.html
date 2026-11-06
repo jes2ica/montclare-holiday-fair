@@ -58,6 +58,7 @@ a:focus-visible, .btn:focus-visible { outline: 3px solid var(--gold); outline-of
 .hero { background: var(--night); color: var(--night-ink); }
 .hero .banner { margin: 0 auto; max-width: 1600px; line-height: 0; }
 .hero .banner img { display: block; width: 100%; height: auto; aspect-ratio: 1916 / 493; object-fit: cover; object-position: 50% 16%; }
+@media (max-width: 560px) { .hero .banner img { aspect-ratio: 1916 / 821; } } /* phones: the whole picture, uncropped */
 
 /* Activities */
 section.activities { padding-block: 0 64px; }
