@@ -10,7 +10,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Young+Serif&family=Figtree:wght@400;500;600;700&display=swap">
 <style>
-/* Layout: the Yeti, Set, Snow! banner art, then the 50/50 raffle card, the 1st-floor entry cards, the 2nd-floor activity cards and the Gym 2 marketplace tiles (Swag opens a dialog previewing the collection). */
+/* Layout: the Yeti, Set, Snow! banner art, then the 50/50 raffle card, the 1st-floor entry cards, the 2nd-floor activity cards and the Gym 2 marketplace tiles (Swag opens a dialog previewing the collection; Admission opens one about Montclare Gives Back). */
 :root {
   --night: #1d2350;        /* hero band */
   --night-ink: #f4f3ff;
@@ -105,8 +105,8 @@ footer .wrap { padding-block: 28px; font-size: 0.85rem; color: var(--muted); dis
   .tiles { grid-template-columns: 1fr; }
   .activity, .tiles > li { padding: 22px; }
 }
-/* Swag preview: a dialog listing the collection; color swatches switch the photo. */
-.tiles .btn { font: inherit; font-weight: 700; border: 0; cursor: pointer; }
+/* Pop-ups (Swag preview, Montclare Gives Back). Swag lists the collection; color swatches switch the photo. */
+button.btn { font: inherit; font-weight: 700; border: 0; cursor: pointer; }
 .swag { width: min(1000px, calc(100vw - 32px)); max-height: calc(100dvh - 32px); padding: 0; border: 0; border-radius: 14px; background: var(--snow); color: var(--ink); box-shadow: 0 20px 60px rgb(0 0 0 / 0.35); }
 .swag::backdrop { background: rgb(15 18 45 / 0.6); }
 .swag[open] { display: flex; flex-direction: column; }
@@ -128,6 +128,10 @@ footer .wrap { padding-block: 28px; font-size: 0.85rem; color: var(--muted); dis
 .swatch { width: 26px; height: 26px; border-radius: 50%; border: 1px solid #9a9db3; background: var(--sw); padding: 0; cursor: pointer; }
 .swatch[aria-pressed="true"] { box-shadow: 0 0 0 2px var(--paper), 0 0 0 4px var(--berry); }
 .swatch-name { font-size: 0.85rem; color: var(--muted); }
+.gives { width: min(720px, calc(100vw - 32px)); }
+.gives .swag-body { gap: 16px; line-height: 1.65; }
+.gives .swag-body p { margin: 0; }
+.gives-note { background: var(--berry-soft); border-radius: 8px; padding: 12px 16px; }
 .swag-notes { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
 .swag-notes section { background: var(--paper); border: 1px solid var(--line); border-radius: 10px; padding: 18px 20px; display: grid; gap: 8px; align-content: start; }
 .swag-notes h3 { font-size: 1.2rem; }
@@ -190,6 +194,7 @@ footer .wrap { padding-block: 28px; font-size: 0.85rem; color: var(--muted); dis
           <h3>Admission</h3>
           <p>Bring one gently used plastic toy.</p>
           <p>Your admission toy gets a second chance! Montclare Gives Back donates every gently used plastic toy to Second Chance Toys for children in need. Can't make it to the fair? Toy collection runs through December 9.</p>
+          <button type="button" class="btn" id="gives-open">About Montclare Gives Back</button>
         </article>
         <article class="activity" id="concessions">
           <img class="art" src="/booths/concessions.jpg" width="362" height="277" alt="" loading="lazy">
@@ -278,10 +283,24 @@ footer .wrap { padding-block: 28px; font-size: 0.85rem; color: var(--muted); dis
   </div>
 </footer>
 
+<dialog class="swag gives" id="gives" aria-labelledby="gives-title">
+  <div class="swag-head">
+    <div><p class="eyebrow">Admission · Second Chance Toys</p><h2 id="gives-title">Montclare Gives Back</h2></div>
+    <button type="button" class="swag-close" aria-label="Close">×</button>
+  </div>
+  <div class="swag-body">
+    <p>This year, Montclare Gives Back is teaming up with Second Chance Toys for our Holiday Fair, Yeti, Set, Snow! Admission to the fair is a donation of gently used plastic toys, which will be cleaned up and passed along to children in need, giving each toy a second chance to bring someone joy this holiday season.</p>
+    <p>Plastic toys often look almost new even after years of play, yet many end up in landfills, where they take up space and never break down. At the same time, many children across the country have few or no toys of their own. Second Chance Toys bridges that gap by rescuing gently used plastic toys and donating them to community organizations that serve children in need.</p>
+    <p class="gives-note"><b>Can't make it to the fair?</b> Toy collection will continue through December 9, so there's still time to give a toy a second chance!</p>
+    <p>Montclare Gives Back is a parent-led committee dedicated to helping our families make a difference in the wider community. Throughout the school year, we host drives that collect coats, books, food, toys, and other essentials for those in need. We're proud to partner with organizations such as NY Cares, Project Cicero, Homeward, Second Chance Toys and local shelters to make sure every donation reaches the people who need it most.</p>
+    <p>None of this would be possible without the kindness and generosity of Montclare families. Each drive is a chance for our children to see firsthand how small acts of giving add up, and to learn that caring for our neighbors is part of being a community.</p>
+  </div>
+</dialog>
+
 <dialog class="swag" id="swag" aria-labelledby="swag-title">
   <div class="swag-head">
     <div><p class="eyebrow">Gym 2 · Holiday Marketplace</p><h2 id="swag-title">Montclare Swag</h2></div>
-    <button type="button" class="swag-close" id="swag-close" aria-label="Close">×</button>
+    <button type="button" class="swag-close" aria-label="Close">×</button>
   </div>
   <div class="swag-body">
     <ul class="products">
@@ -384,11 +403,14 @@ footer .wrap { padding-block: 28px; font-size: 0.85rem; color: var(--muted); dis
       })
       .catch(function () { prize.textContent = ''; plbl.textContent = 'See the pot on the raffle page.'; });
   }
-  // Swag preview dialog.
+  // Pop-ups: the button opens it; ×, Esc or a click on the backdrop closes it.
+  [['swag-open', 'swag'], ['gives-open', 'gives']].forEach(function (p) {
+    var d = document.getElementById(p[1]);
+    document.getElementById(p[0]).addEventListener('click', function () { d.showModal(); });
+    d.querySelector('.swag-close').addEventListener('click', function () { d.close(); });
+    d.addEventListener('click', function (e) { if (e.target === d) d.close(); });
+  });
   var swag = document.getElementById('swag');
-  document.getElementById('swag-open').addEventListener('click', function () { swag.showModal(); });
-  document.getElementById('swag-close').addEventListener('click', function () { swag.close(); });
-  swag.addEventListener('click', function (e) { if (e.target === swag) swag.close(); }); // click on the backdrop
   swag.querySelectorAll('.swatch').forEach(function (b) {
     b.addEventListener('click', function () {
       var card = b.closest('.product'), img = card.querySelector('.product-img img');
