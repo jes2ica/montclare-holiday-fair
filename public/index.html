@@ -10,7 +10,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Young+Serif&family=Figtree:wght@400;500;600;700&display=swap">
 <style>
-/* Layout: the Yeti, Set, Snow! banner art, then the Volunteer & Concessions sign-up card, the 50/50 Raffle & MPA Dues card, the 1st-floor Admission card, the 2nd-floor activity cards and the Gym 2 marketplace tiles (Concessions included) (Swag opens a dialog previewing the collection; Admission opens one about Montclare Gives Back; Scholarship Drive opens one about the Montclare Scholarship Fund; the raffle card opens the ticket schedule). */
+/* Layout: the Yeti, Set, Snow! banner art, then the Volunteer & Concessions sign-up card, the 50/50 Raffle & MPA Dues card, the 1st-floor Admission card, the 2nd-floor activity cards and the Gym 2 marketplace tiles (Concessions included) (Swag opens a dialog previewing the collection; Admission opens one about Montclare Gives Back; Scholarship Drive opens one about the Montclare Scholarship Fund; the raffle card opens the ticket schedule; the Reading Corner opens the Book Fair save the date). */
 :root {
   --night: #1d2350;        /* hero band */
   --night-ink: #f4f3ff;
@@ -121,7 +121,7 @@ footer .wrap { padding-block: 28px; font-size: 0.85rem; color: var(--muted); dis
   .tiles { grid-template-columns: 1fr; }
   .activity, .tiles > li { padding: 22px; }
 }
-/* Pop-ups (Swag preview, Montclare Gives Back, Scholarship Drive, Raffle Ticket Schedule). Swag lists the collection; color swatches switch the photo. */
+/* Pop-ups (Swag preview, Montclare Gives Back, Scholarship Drive, Raffle Ticket Schedule, Book Fair save the date). Swag lists the collection; color swatches switch the photo. */
 button.btn { font: inherit; font-weight: 700; border: 0; cursor: pointer; }
 .swag { width: min(1000px, calc(100vw - 32px)); max-height: calc(100dvh - 32px); padding: 0; border: 0; border-radius: 14px; background: var(--snow); color: var(--ink); box-shadow: 0 20px 60px rgb(0 0 0 / 0.35); }
 .swag::backdrop { background: rgb(15 18 45 / 0.6); }
@@ -284,8 +284,13 @@ p.pay { background: var(--green-soft); color: var(--green-ink); border-radius: 8
           <img class="art" src="/booths/reading.jpg" width="362" height="277" alt="" loading="lazy">
           <h3>Parent-Led Reading Corner</h3>
           <p class="where"><span aria-hidden="true">📍</span> Moon Room</p>
-          <p>Every great adventure begins with a story! Visit our cozy, winter-inspired reading corner at the Holiday Fair, where Montclare parents will bring favorite children's books to life for our little readers. Come relax, spark your child's imagination, and celebrate the joy of storytelling as a community.</p>
-          <a class="btn" href="https://docs.google.com/spreadsheets/d/1ymjY0YBUXlw9pwoxZzC-AviPbdNn9fus/edit?gid=964994242#gid=964994242" target="_blank" rel="noopener">See the reading schedule</a>
+          <p>Every great adventure begins with a story! For the first time ever, the Holiday Fair will have its very own reading corner. Visit our cozy, winter-inspired space, where Montclare parents will bring favorite children's books to life for our little readers. After all the excitement of the holiday fair, it's the perfect spot for the littles to snuggle in, catch their breath, and spark their imagination as we celebrate the joy of storytelling as a community.</p>
+          <details class="more">
+            <summary><span class="closed">Want to be a reader?</span><span class="opened">Show less</span></summary>
+            <p>Want to be part of the magic? We're looking for parent volunteers to lead short reading sessions throughout the fair. Sign up to share a favorite story, from a beloved classic to a tale that celebrates your family's culture or holiday traditions. If you're feeling inspired, costumes and creative touches (like silly hats or sweaters) are always welcome, though certainly not required.</p>
+            <p><a href="https://docs.google.com/spreadsheets/d/1ymjY0YBUXlw9pwoxZzC-AviPbdNn9fus/edit?gid=964994242#gid=964994242" target="_blank" rel="noopener"><b>Parent reader sign-up</b></a></p>
+          </details>
+          <button type="button" class="btn" id="bookfair-open">Book Fair: Save the date</button>
         </article>
       </div>
     </div>
@@ -346,6 +351,19 @@ p.pay { background: var(--green-soft); color: var(--green-ink); border-radius: 8
     <p class="gives-note"><b>Can't make it to the fair?</b> Toy collection will continue through December 9, so there's still time to give a toy a second chance!</p>
     <p>Montclare Gives Back is a parent-led committee dedicated to helping our families make a difference in the wider community. Throughout the school year, we host drives that collect coats, books, food, toys, and other essentials for those in need. We're proud to partner with organizations such as NY Cares, Project Cicero, Homeward, Second Chance Toys and local shelters to make sure every donation reaches the people who need it most.</p>
     <p>None of this would be possible without the kindness and generosity of Montclare families. Each drive is a chance for our children to see firsthand how small acts of giving add up, and to learn that caring for our neighbors is part of being a community.</p>
+  </div>
+</dialog>
+
+<dialog class="swag gives" id="bookfair" aria-labelledby="bookfair-title">
+  <div class="swag-head">
+    <div><p class="eyebrow">Save the date · April 12–15, 2027</p><h2 id="bookfair-title">Montclare Book Fair</h2></div>
+    <button type="button" class="swag-close" aria-label="Close">×</button>
+  </div>
+  <div class="swag-body">
+    <p>This spring, the Montclare Book Fair is getting a whole new look! We're turning it into a book exchange in the school library, where our little readers get to browse, choose, and "buy" their very own books, each one for a symbolic $1. Classes will visit during the school day, and families are invited to stop by during Parent-Teacher Conferences on April 12 and 13.</p>
+    <p class="gives-note"><b>Start setting books aside!</b> In the weeks before the fair, we'll be collecting gently used children's books from Montclare families, so start setting aside the stories your kids have outgrown.</p>
+    <p>Any books left after the fair will be donated through Montclare Gives Back, so every book gets a new reader. More details to come!</p>
+    <a class="btn" href="https://calendar.google.com/calendar/render?action=TEMPLATE&amp;text=Montclare%20Book%20Fair&amp;dates=20270412/20270414&amp;details=A%20book%20exchange%20in%20the%20school%20library%3A%20every%20book%20a%20symbolic%20%241.%20Families%20are%20invited%20to%20stop%20by%20during%20Parent-Teacher%20Conferences%20on%20April%2012%20and%2013.%20https%3A%2F%2Fholidayfair.montclarepa.org%2F&amp;location=Montclare%20Children%27s%20School" target="_blank" rel="noopener">Add to Google Calendar</a>
   </div>
 </dialog>
 
@@ -484,7 +502,7 @@ p.pay { background: var(--green-soft); color: var(--green-ink); border-radius: 8
       .catch(function () { num.textContent = ''; lbl.textContent = 'See the current line on the waitlist page.'; });
   }
   // Pop-ups: the button opens it; ×, Esc or a click on the backdrop closes it.
-  [['swag-open', 'swag'], ['gives-open', 'gives'], ['scholarship-open', 'scholarship'], ['raffle-open', 'raffle-schedule']].forEach(function (p) {
+  [['swag-open', 'swag'], ['gives-open', 'gives'], ['scholarship-open', 'scholarship'], ['raffle-open', 'raffle-schedule'], ['bookfair-open', 'bookfair']].forEach(function (p) {
     var d = document.getElementById(p[1]);
     document.getElementById(p[0]).addEventListener('click', function () { d.showModal(); });
     d.querySelector('.swag-close').addEventListener('click', function () { d.close(); });
