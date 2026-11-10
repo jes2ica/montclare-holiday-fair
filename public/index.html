@@ -10,7 +10,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Young+Serif&family=Figtree:wght@400;500;600;700&display=swap">
 <style>
-/* Layout: the Yeti, Set, Snow! banner art, then the 50/50 raffle card, the 1st-floor entry cards, the 2nd-floor activity cards and the Gym 2 marketplace tiles (Swag opens a dialog previewing the collection; Admission opens one about Montclare Gives Back). */
+/* Layout: the Yeti, Set, Snow! banner art, then the Volunteer & Concessions sign-up card, the 50/50 Raffle & MPA Dues card, the 1st-floor Admission card, the 2nd-floor activity cards and the Gym 2 marketplace tiles (Concessions included) (Swag opens a dialog previewing the collection; Admission opens one about Montclare Gives Back; Scholarship Drive opens one about the Montclare Scholarship Fund; the raffle card opens the ticket schedule). */
 :root {
   --night: #1d2350;        /* hero band */
   --night-ink: #f4f3ff;
@@ -23,6 +23,8 @@
   --berry-soft: #fbe6ec;
   --gold: #e3b341;
   --on-berry: #ffffff;
+  --green-soft: #e3f4e8;   /* payment note */
+  --green-ink: #1d5e33;
   --display: "Young Serif", Georgia, "Times New Roman", serif;
   --body: "Figtree", system-ui, -apple-system, "Segoe UI", sans-serif;
 }
@@ -30,13 +32,13 @@
   :root:not([data-theme="light"]) {
     --night: #11143a; --night-ink: #f4f3ff; --snow: #12142b; --paper: #1a1d3a;
     --ink: #eceaff; --muted: #a6a8c8; --line: #2c3058; --berry: #f07a9c; --berry-soft: #3a1f33;
-    --gold: #f0c65e; --on-berry: #1a0d14; color-scheme: dark;
+    --gold: #f0c65e; --on-berry: #1a0d14; --green-soft: #183a26; --green-ink: #9fe0b4; color-scheme: dark;
   }
 }
 :root[data-theme="dark"] {
   --night: #11143a; --night-ink: #f4f3ff; --snow: #12142b; --paper: #1a1d3a;
   --ink: #eceaff; --muted: #a6a8c8; --line: #2c3058; --berry: #f07a9c; --berry-soft: #3a1f33;
-  --gold: #f0c65e; --on-berry: #1a0d14; color-scheme: dark;
+  --gold: #f0c65e; --on-berry: #1a0d14; --green-soft: #183a26; --green-ink: #9fe0b4; color-scheme: dark;
 }
 * { box-sizing: border-box; }
 [hidden] { display: none !important; }
@@ -56,7 +58,7 @@ a:focus-visible, .btn:focus-visible { outline: 3px solid var(--gold); outline-of
 
 /* Hero */
 .hero { background: var(--night); color: var(--night-ink); }
-.hero .banner { margin: 0 auto; max-width: 1600px; line-height: 0; }
+.hero .banner { margin: 0; line-height: 0; }
 .hero .banner img { display: block; width: 100%; height: auto; aspect-ratio: 1916 / 493; object-fit: cover; object-position: 50% 16%; }
 @media (max-width: 560px) { .hero .banner img { aspect-ratio: 1916 / 821; } } /* phones: the whole picture, uncropped */
 
@@ -87,14 +89,27 @@ section.market .wrap { border-top: 1px solid var(--line); padding-top: 56px; }
 .tiles > li { background: var(--paper); border: 1px solid var(--line); border-radius: 10px; padding: 28px; display: grid; gap: 14px; align-content: start; min-width: 0; }
 .tiles .icon { width: 44px; height: 44px; border-radius: 50%; display: grid; place-items: center; background: var(--berry-soft); color: var(--berry); }
 .tiles h3 { font-size: 1.65rem; }
-section.raffle-top { padding-block: 40px 56px; }
-.raffle .art { width: 200px; }
+section.volunteer-top { padding-block: 40px 56px; }
+.stack { display: grid; gap: 24px; }
+.wide { grid-template-columns: 200px 1fr; column-gap: 32px; align-items: start; }
+.wide .art { width: 200px; }
+.volunteer { gap: 22px; border-color: var(--berry); }
+.volunteer .body { display: grid; gap: 10px; min-width: 0; }
+.way { display: grid; gap: 10px; align-content: start; }
+.way p { color: var(--ink); }
+.way .btn { margin-top: 4px; }
+.way .also { margin-top: 6px; font-size: 0.95rem; }
+.way .also a { font-weight: 700; }
+.volunteer .eyebrow { color: var(--berry); }
+.volunteer h2 { font-size: clamp(1.5rem, 3.5vw, 2rem); }
 .section-head.with-art { grid-template-columns: 180px 1fr; align-items: center; gap: 20px; }
 .section-head.with-art .art { width: 180px; }
-.raffle { grid-template-columns: auto 1fr auto; align-items: center; column-gap: 32px; }
-.raffle .body { display: grid; gap: 10px; min-width: 0; }
-.raffle .side { display: grid; gap: 12px; justify-items: start; }
-@media (max-width: 760px) { .raffle, .section-head.with-art { grid-template-columns: 1fr; } .section-head.with-art .art { justify-self: start; } }
+.activity .body { display: grid; gap: 14px; min-width: 0; }
+.more summary { cursor: pointer; color: var(--berry); font-weight: 700; width: fit-content; }
+.more summary:focus-visible { outline: 3px solid var(--gold); outline-offset: 3px; }
+.more p { margin-top: 10px; }
+.more[open] .closed, .more:not([open]) .opened { display: none; }
+@media (max-width: 760px) { .wide, .section-head.with-art { grid-template-columns: 1fr; } .section-head.with-art .art { justify-self: start; } }
 
 .section-head-text { display: grid; gap: 8px; }
 .tiles .blurb { color: var(--muted); font-size: 0.95rem; line-height: 1.5; }
@@ -106,7 +121,7 @@ footer .wrap { padding-block: 28px; font-size: 0.85rem; color: var(--muted); dis
   .tiles { grid-template-columns: 1fr; }
   .activity, .tiles > li { padding: 22px; }
 }
-/* Pop-ups (Swag preview, Montclare Gives Back). Swag lists the collection; color swatches switch the photo. */
+/* Pop-ups (Swag preview, Montclare Gives Back, Scholarship Drive, Raffle Ticket Schedule). Swag lists the collection; color swatches switch the photo. */
 button.btn { font: inherit; font-weight: 700; border: 0; cursor: pointer; }
 .swag { width: min(1000px, calc(100vw - 32px)); max-height: calc(100dvh - 32px); padding: 0; border: 0; border-radius: 14px; background: var(--snow); color: var(--ink); box-shadow: 0 20px 60px rgb(0 0 0 / 0.35); }
 .swag::backdrop { background: rgb(15 18 45 / 0.6); }
@@ -132,7 +147,15 @@ button.btn { font: inherit; font-weight: 700; border: 0; cursor: pointer; }
 .gives { width: min(720px, calc(100vw - 32px)); }
 .gives .swag-body { gap: 16px; line-height: 1.65; }
 .gives .swag-body p { margin: 0; }
+.gives h3 { font-size: 1.3rem; margin-top: 4px; }
+.gives .details li { line-height: 1.55; }
+.btn-row { display: flex; flex-wrap: wrap; gap: 12px; }
+.schedule { list-style: none; margin: 0; padding: 0; background: var(--paper); border: 1px solid var(--line); border-radius: 10px; }
+.schedule li { display: flex; justify-content: space-between; gap: 12px; padding: 12px 18px; }
+.schedule li + li { border-top: 1px solid var(--line); }
+.schedule span { color: var(--muted); font-variant-numeric: tabular-nums; }
 .gives-note { background: var(--berry-soft); border-radius: 8px; padding: 12px 16px; }
+p.pay { background: var(--green-soft); color: var(--green-ink); border-radius: 8px; padding: 12px 16px; }
 .swag-notes { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
 .swag-notes section { background: var(--paper); border: 1px solid var(--line); border-radius: 10px; padding: 18px 20px; display: grid; gap: 8px; align-content: start; }
 .swag-notes h3 { font-size: 1.2rem; }
@@ -158,28 +181,44 @@ button.btn { font: inherit; font-weight: 700; border: 0; cursor: pointer; }
   <h1 class="banner">
     <img src="/banner.jpg"
          srcset="/banner-960.jpg 960w, /banner.jpg 1916w"
-         sizes="(max-width: 1600px) 100vw, 1600px" width="1916" height="821"
+         sizes="100vw" width="1916" height="821"
          alt="Yeti, Set, Snow! Montclare Holiday Fair. Saturday, December 5, 2026, 10 AM to 12 PM. Admission: a gently used plastic toy.">
   </h1>
 </header>
 
 <main>
-  <section class="raffle-top">
+  <section class="volunteer-top">
     <div class="wrap">
-      <article class="activity raffle" id="raffle">
-        <img class="art" src="/booths/raffle.jpg" width="362" height="277" alt="" loading="lazy">
-        <div class="body">
-          <h3>50/50 Raffle</h3>
-          <p>Half the pot goes to one lucky winner, and the other half supports Montclare Children's School. Reserve tickets on your phone, then pay by card or cash at the raffle table.</p>
-        </div>
-        <div class="side">
-          <div class="wait" aria-live="polite">
-            <span class="num" id="raffle-prize">–</span>
-            <span class="lbl" id="raffle-label">Checking the pot…</span>
+      <div class="stack">
+        <article class="activity volunteer" id="volunteer">
+          <div class="body">
+            <p class="eyebrow">Volunteer &amp; Concessions</p>
+            <h2>We couldn't put on the Holiday Fair without you!</h2>
           </div>
-          <a class="btn" href="/raffle/">Buy raffle tickets</a>
-        </div>
-      </article>
+          <div class="way">
+            <p>Pick a time slot to lend a hand at the fair, or help stock our concessions table with a donation if you can't make it.</p>
+            <a class="btn" href="https://incandescent-fairy-afb046.netlify.app/" target="_blank" rel="noopener">Sign up</a>
+            <p class="also"><span aria-hidden="true">📚</span> Want to read at the Parent-Led Reading Corner? <a href="https://docs.google.com/spreadsheets/d/1ymjY0YBUXlw9pwoxZzC-AviPbdNn9fus/edit?gid=964994242#gid=964994242" target="_blank" rel="noopener">Sign up to read</a></p>
+          </div>
+        </article>
+        <article class="activity wide" id="raffle">
+          <img class="art" src="/booths/raffle.jpg" width="362" height="277" alt="" loading="lazy">
+          <div class="body">
+            <h3>50/50 Raffle &amp; MPA Dues</h3>
+            <p>Every 50/50 Raffle ticket and every dollar of MPA dues goes right back into the Montclare community. Together they power the Montclare Parents Association and the events our families love: Class Cocktail parties (held at fun bars and restaurants in the UWS), the Holiday Fair, the Book Fair, Graduation, and new community favorites like the Disco Dance Party! 🪩</p>
+            <details class="more">
+              <summary><span class="closed">Read more</span><span class="opened">Show less</span></summary>
+            <p>They also help us wrap up something special for our incredible specialists and administrative staff, with gifts during the holidays and again at the end of the school year. 🎁</p>
+            <p>None of this merry-making happens without you. Community-building events depend on families contributing their MPA dues, and we are so grateful for all that you do.</p>
+            <p>So grab a raffle ticket, pay your dues, and help us keep the good cheer going all year long!</p>
+            </details>
+            <div class="btn-row">
+              <button type="button" class="btn" id="raffle-open">Raffle ticket schedule</button>
+              <a class="btn" href="https://square.link/u/Gjw7lxJ4" target="_blank" rel="noopener">Pay MPA dues</a>
+            </div>
+          </div>
+        </article>
+      </div>
     </div>
   </section>
 
@@ -189,19 +228,15 @@ button.btn { font: inherit; font-weight: 700; border: 0; cursor: pointer; }
         <p class="eyebrow">1st floor · Entry</p>
         <h2>Welcome in</h2>
       </div>
-      <div class="grid">
-        <article class="activity" id="admission">
-          <img class="art" src="/booths/admission.jpg" width="362" height="277" alt="" loading="lazy">
+      <article class="activity wide" id="admission">
+        <img class="art" src="/booths/admission.jpg" width="362" height="277" alt="" loading="lazy">
+        <div class="body">
           <h3>Admission</h3>
           <p>Bring one gently used plastic toy.</p>
           <p>Your admission toy gets a second chance! Montclare Gives Back donates every gently used plastic toy to Second Chance Toys for children in need. Can't make it to the fair? Toy collection runs through December 9.</p>
           <button type="button" class="btn" id="gives-open">About Montclare Gives Back</button>
-        </article>
-        <article class="activity" id="concessions">
-          <img class="art" src="/booths/concessions.jpg" width="362" height="277" alt="" loading="lazy">
-          <h3>Concessions</h3>
-        </article>
-      </div>
+        </div>
+      </article>
     </div>
   </section>
 
@@ -216,6 +251,7 @@ button.btn { font: inherit; font-weight: 700; border: 0; cursor: pointer; }
         <article class="activity" id="face-painting">
           <img class="art" src="/booths/facepainting.jpg" width="362" height="277" alt="" loading="lazy">
           <h3>Face Painting</h3>
+          <p class="where"><span aria-hidden="true">📍</span> Star Room</p>
           <p>Snowflakes, reindeer, superheroes, sparkles. Skip the line: join the waitlist on your phone and we'll text you when it's your child's turn.</p>
           <div class="wait" aria-live="polite">
             <span class="num" id="fp-wait">–</span>
@@ -227,18 +263,21 @@ button.btn { font: inherit; font-weight: 700; border: 0; cursor: pointer; }
         <article class="activity" id="holiday-express">
           <img class="art" src="/booths/holidayexpress.jpg" width="362" height="277" alt="" loading="lazy">
           <h3>Holiday Express Sensory Room</h3>
-          <p>All aboard for a calm, hands-on winter journey. Touch, listen, and explore at your own pace in a sensory-friendly space made for little travelers.</p>
+          <p class="where"><span aria-hidden="true">📍</span> Polar Bear Room</p>
+          <p>Step into the <b>Polar Bear Room</b> for hands-on winter fun! Roll, cut, and decorate gingerbread-scented play dough cookies at the Gingerbread Bakery, then hop aboard the Holiday Express to scoop pretend snow and drive toy trucks and trains through it. For the main course, it's Yeti Spaghetti! Grab a pair of tongs, pick up some yarn noodles, and feed them to a hungry, furry yeti.</p>
         </article>
 
         <article class="activity" id="arts-crafts">
           <img class="art" src="/booths/artscrafts.jpg" width="362" height="277" alt="" loading="lazy">
           <h3>Arts + Crafts</h3>
+          <p class="where"><span aria-hidden="true">📍</span> Art Room</p>
         </article>
 
         <article class="activity" id="fun-games">
           <img class="art" src="/booths/games.jpg" width="362" height="277" alt="" loading="lazy">
           <h3>Fun Games</h3>
-          <p>Snowy games for every age. Drop in, play a round or two, and cheer each other on.</p>
+          <p class="where"><span aria-hidden="true">📍</span> Koala Room</p>
+          <p>Stomp on over to the <b>Koala Room</b> for four frosty games! Reel in an ice block at the Yeti's Ice Fishing Hole, stomp and freeze on giant yeti footprints, toss snowballs into a furry yeti's mouth, or get four in a row with yetis and snowflakes. Before you go, feed your ice block or snowball ticket to the Hungry Yeti and pick a prize!</p>
         </article>
 
         <article class="activity" id="reading-corner">
@@ -246,6 +285,7 @@ button.btn { font: inherit; font-weight: 700; border: 0; cursor: pointer; }
           <h3>Parent-Led Reading Corner</h3>
           <p class="where"><span aria-hidden="true">📍</span> Moon Room</p>
           <p>Every great adventure begins with a story! Visit our cozy, winter-inspired reading corner at the Holiday Fair, where Montclare parents will bring favorite children's books to life for our little readers. Come relax, spark your child's imagination, and celebrate the joy of storytelling as a community.</p>
+          <a class="btn" href="https://docs.google.com/spreadsheets/d/1ymjY0YBUXlw9pwoxZzC-AviPbdNn9fus/edit?gid=964994242#gid=964994242" target="_blank" rel="noopener">See the reading schedule</a>
         </article>
       </div>
     </div>
@@ -258,6 +298,13 @@ button.btn { font: inherit; font-weight: 700; border: 0; cursor: pointer; }
         <div class="section-head-text"><p class="eyebrow">Gym 2</p><h2>Holiday Marketplace</h2></div>
       </div>
       <ul class="tiles">
+        <li id="concessions">
+          <img class="art" src="/booths/concessions.jpg" width="362" height="277" alt="" loading="lazy">
+          <h3>Concessions</h3>
+          <p class="blurb"><b>Yeti, Set, Snack! ❄️</b></p>
+          <p class="blurb">Come hungry! This year, we're serving up crispy scallion pancakes fresh off the griddle and frosty frozen hot chocolate. Last year's favorite snacks are back, too. Stop by the concessions table in the Gym 2 Marketplace for a bite between all the Holiday Fair fun!</p>
+          <p class="pay">We'll accept <b>cash</b>, <b>Zelle</b>, and <b>Square</b>.</p>
+        </li>
         <li>
           <img class="art" src="/booths/swag.jpg" width="362" height="277" alt="" loading="lazy">
           <h3>Swag</h3>
@@ -266,11 +313,14 @@ button.btn { font: inherit; font-weight: 700; border: 0; cursor: pointer; }
         </li>
         <li>
           <img class="art" src="/booths/bracelets.jpg" width="362" height="277" alt="" loading="lazy">
-          <h3>Bracelets &amp; Giveaways</h3>
+          <h3>Scholarship Drive</h3>
+          <p class="blurb">Tis the season of giving, and there's no better gift than a great start. Every year, the MPA raises money for the Montclare Scholarship Fund, which supports families who would not be able to send their children to our amazing school without help. Every gift is matched 100% by Cadence Education.</p>
+          <button type="button" class="btn" id="scholarship-open">About the Scholarship Drive</button>
         </li>
         <li>
           <img class="art" src="/booths/photowall.jpg" width="362" height="277" alt="" loading="lazy">
           <h3>Wow Wall Photo Moment</h3>
+          <p class="blurb">Strike a pose at the Yeti-themed WOW Wall for a family photo, a silly shot with friends, or a close-up of your fresh face paint! Take home an instant Polaroid and download photos from our volunteer professional photographer via Google Drive for 30 days after the fair. While you're there, browse past Montclare yearbooks, get a sneak peek at this year's book, and grab a yearbook or dedication page at early bird pricing.</p>
         </li>
       </ul>
     </div>
@@ -281,7 +331,7 @@ button.btn { font: inherit; font-weight: 700; border: 0; cursor: pointer; }
 
 <footer>
   <div class="wrap">
-    <span>Montclare Children's School Holiday Fair · Organized by the holiday fair committee</span>
+    <span>Montclare Children's School Holiday Fair · Run by the Montclare Association, Inc.</span>
   </div>
 </footer>
 
@@ -296,6 +346,45 @@ button.btn { font: inherit; font-weight: 700; border: 0; cursor: pointer; }
     <p class="gives-note"><b>Can't make it to the fair?</b> Toy collection will continue through December 9, so there's still time to give a toy a second chance!</p>
     <p>Montclare Gives Back is a parent-led committee dedicated to helping our families make a difference in the wider community. Throughout the school year, we host drives that collect coats, books, food, toys, and other essentials for those in need. We're proud to partner with organizations such as NY Cares, Project Cicero, Homeward, Second Chance Toys and local shelters to make sure every donation reaches the people who need it most.</p>
     <p>None of this would be possible without the kindness and generosity of Montclare families. Each drive is a chance for our children to see firsthand how small acts of giving add up, and to learn that caring for our neighbors is part of being a community.</p>
+  </div>
+</dialog>
+
+<dialog class="swag gives" id="raffle-schedule" aria-labelledby="raffle-schedule-title">
+  <div class="swag-head">
+    <div><p class="eyebrow">50/50 Raffle · In person only</p><h2 id="raffle-schedule-title">Raffle Ticket Schedule</h2></div>
+    <button type="button" class="swag-close" aria-label="Close">×</button>
+  </div>
+  <div class="swag-body">
+    <p>Raffle tickets will be sold in the <b>lobby of Montclare Children's School</b>, 8:00–9:00 AM:</p>
+    <ul class="schedule">
+      <li><b>Monday, Nov 30</b><span>8:00–9:00 AM</span></li>
+      <li><b>Tuesday, Dec 1</b><span>8:00–9:00 AM</span></li>
+      <li><b>Wednesday, Dec 2</b><span>8:00–9:00 AM</span></li>
+      <li><b>Thursday, Dec 3</b><span>8:00–9:00 AM</span></li>
+      <li><b>Friday, Dec 4</b><span>8:00–9:00 AM</span></li>
+    </ul>
+  </div>
+</dialog>
+
+<dialog class="swag gives" id="scholarship" aria-labelledby="scholarship-title">
+  <div class="swag-head">
+    <div><p class="eyebrow">Gym 2 · Montclare Scholarship Fund</p><h2 id="scholarship-title">Scholarship Drive</h2></div>
+    <button type="button" class="swag-close" aria-label="Close">×</button>
+  </div>
+  <div class="swag-body">
+    <p>Tis the season of giving, and there's no better gift than a great start. Every year, the MPA raises money for the Montclare Scholarship Fund, which supports families who would not be able to send their children to our amazing school without help.</p>
+    <p>You've seen the Montclare magic firsthand. Studies show that high-quality early childhood education can change the entire trajectory of a child's life, with better outcomes that extend throughout adulthood.</p>
+    <p><b>Our wish this year: open the doors to more children.</b> ✨</p>
+    <p>On average, only 7% of Montclare families currently receive assistance. Those of you with older children in independent schools will know that those schools often have 20%–40% of students receiving financial aid. And every year, more families apply for aid than we can fund. That's why every contribution, even $20, makes such a real difference.</p>
+    <h3>Why your gift goes further</h3>
+    <ul class="details">
+      <li><b>100% goes to financial aid.</b> Every dollar goes directly to Montclare families, and funds do not support any other projects or initiatives.</li>
+      <li><b>100% tax-deductible.</b> The MPA is a 501(c)(3) non-profit organization.</li>
+      <li><b>Employer match eligible.</b> Your donation may qualify for an employer or corporate match.</li>
+      <li><b>Doubled by Cadence Education.</b> Most importantly, every contribution is matched 100% by Cadence, doubling your impact.</li>
+    </ul>
+    <p class="gives-note"><b>A little holiday math:</b> a $100 donation with a 100% corporate match becomes $200, and with Cadence's match it ultimately becomes $400! 🎄</p>
+    <p>Our Scholarship Drive kicked off earlier this month on Giving Tuesday, December 1. Help us make the season bright for a future Montclare family!</p>
   </div>
 </dialog>
 
@@ -393,20 +482,8 @@ button.btn { font: inherit; font-weight: 700; border: 0; cursor: pointer; }
       .then(show)
       .catch(function () { num.textContent = ''; lbl.textContent = 'See the current line on the waitlist page.'; });
   }
-  // Live 50/50 pot.
-  var prize = document.getElementById('raffle-prize'), plbl = document.getElementById('raffle-label');
-  function money(n) { return '$' + (n % 1 ? n.toFixed(2) : n.toLocaleString()); }
-  function refreshRaffle() {
-    fetch('/api/raffle/info', { cache: 'no-store' })
-      .then(function (r) { if (!r.ok) throw 0; return r.json(); })
-      .then(function (d) {
-        if (d.winner) { prize.textContent = '#' + d.winner.ticket; plbl.textContent = 'Winning ticket · ' + money(d.prize) + ' prize'; return; }
-        prize.textContent = money(d.prize); plbl.textContent = 'to the winner so far';
-      })
-      .catch(function () { prize.textContent = ''; plbl.textContent = 'See the pot on the raffle page.'; });
-  }
   // Pop-ups: the button opens it; ×, Esc or a click on the backdrop closes it.
-  [['swag-open', 'swag'], ['gives-open', 'gives']].forEach(function (p) {
+  [['swag-open', 'swag'], ['gives-open', 'gives'], ['scholarship-open', 'scholarship'], ['raffle-open', 'raffle-schedule']].forEach(function (p) {
     var d = document.getElementById(p[1]);
     document.getElementById(p[0]).addEventListener('click', function () { d.showModal(); });
     d.querySelector('.swag-close').addEventListener('click', function () { d.close(); });
@@ -423,8 +500,8 @@ button.btn { font: inherit; font-weight: 700; border: 0; cursor: pointer; }
     });
   });
 
-  refresh(); refreshRaffle();
-  setInterval(function () { if (!document.hidden) { refresh(); refreshRaffle(); } }, 15000);
+  refresh();
+  setInterval(function () { if (!document.hidden) refresh(); }, 15000);
 
 })();
 </script>
