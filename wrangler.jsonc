@@ -15,13 +15,7 @@
   "vars": {
     // Number of face painters working at the same time, and minutes per child.
     "PAINTERS": "1",
-    "MINUTES_PER_CHILD": "10",
-    // 50/50 raffle ticket bundles as "qty:dollars". Buyers pay at the table by Square or cash.
-    "RAFFLE_PRICES": "1:5,5:20,15:50",
-    // Square Point of Sale API (developer.squareup.com app). The callback must match the
-    // Web callback URL saved in that app's Point of Sale API settings exactly.
-    "SQUARE_APP_ID": "sq0idp-oYAdQWFctX5lElyN68PKgw",
-    "SQUARE_CALLBACK_URL": "https://holidayfair.montclarepa.org/raffle/staff/"
+    "MINUTES_PER_CHILD": "10"
   },
   "env": {
     // Preview deploys (`npm run preview`). Same database as production.
@@ -35,13 +29,12 @@
       ],
       "vars": {
         "PAINTERS": "1",
-        "MINUTES_PER_CHILD": "10",
-        "RAFFLE_PRICES": "1:5,5:20,15:50"
+        "MINUTES_PER_CHILD": "10"
       }
     }
   }
   // Secrets (set with `npx wrangler pages secret put NAME`, never written here):
-  //   STAFF_PIN                      required for both staff consoles
+  //   STAFF_PIN                      required for the face-painting staff console
   //   TWILIO_ACCOUNT_SID             optional, enables "turn ready" texts
   //   TWILIO_AUTH_TOKEN              optional
   //   TWILIO_MESSAGING_SERVICE_SID   optional (or TWILIO_FROM, a +1 number)
