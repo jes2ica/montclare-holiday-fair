@@ -10,7 +10,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Young+Serif&family=Figtree:wght@400;500;600;700&display=swap">
 <style>
-/* Layout: the Yeti, Set, Snow! banner art, then the Volunteer & Concessions sign-up card, the 50/50 Raffle & MPA Dues card, the 1st-floor Admission card, the 2nd-floor activity cards and the Gym 2 marketplace tiles (Concessions included) (Swag opens a dialog previewing the collection; Admission opens one about Montclare Gives Back; Scholarship Drive opens one about the Montclare Scholarship Fund; the raffle card opens the ticket schedule; the Reading Corner opens the Book Fair save the date). */
+/* Layout: the Yeti, Set, Snow! banner art, then the Volunteer & Concessions sign-up card, the 50/50 Raffle & MPA Dues card, the 1st-floor Admission card, the 2nd-floor activity cards the Gym 2 marketplace tiles (Concessions included) and the Scholarship Drive section (Swag opens a dialog previewing the collection; Admission opens one about Montclare Gives Back; Scholarship Drive opens one about the Montclare Scholarship Fund; the raffle card opens the ticket schedule; the Reading Corner opens the Book Fair save the date). */
 :root {
   --night: #1d2350;        /* hero band */
   --night-ink: #f4f3ff;
@@ -318,9 +318,8 @@ p.pay { background: var(--green-soft); color: var(--green-ink); border-radius: 8
         </li>
         <li>
           <img class="art" src="/booths/bracelets.jpg" width="362" height="277" alt="" loading="lazy">
-          <h3>Scholarship Drive</h3>
-          <p class="blurb">Tis the season of giving, and there's no better gift than a great start. Every year, the MPA raises money for the Montclare Scholarship Fund, which supports families who would not be able to send their children to our amazing school without help. Every gift is matched 100% by Cadence Education.</p>
-          <button type="button" class="btn" id="scholarship-open">About the Scholarship Drive</button>
+          <h3>Scholarship Benefit</h3>
+          <p class="blurb">Stop by to shop for bracelets that support our Scholarship Fund. Show us you follow the MPA on Instagram for a chance to win a goodie basket! While you're there, share a theme idea for this year's Benefit and find out how to donate an item or experience to the auction.</p>
         </li>
         <li>
           <img class="art" src="/booths/photowall.jpg" width="362" height="277" alt="" loading="lazy">
@@ -328,6 +327,19 @@ p.pay { background: var(--green-soft); color: var(--green-ink); border-radius: 8
           <p class="blurb">Strike a pose at the Yeti-themed WOW Wall for a family photo, a silly shot with friends, or a close-up of your fresh face paint! Take home an instant Polaroid and download photos from our volunteer professional photographer via Google Drive for 30 days after the fair. While you're there, browse past Montclare yearbooks, get a sneak peek at this year's book, and grab a yearbook or dedication page at early bird pricing.</p>
         </li>
       </ul>
+    </div>
+  </section>
+
+  <section class="activities" id="scholarship-drive">
+    <div class="wrap">
+      <div class="section-head">
+        <p class="eyebrow">December 1–31 · Montclare Scholarship Fund</p>
+        <h2>Scholarship Drive</h2>
+      </div>
+      <article class="activity">
+        <p>Tis the season of giving, and there's no better gift than a great start. Every year, the MPA raises money for the Montclare Scholarship Fund, which supports families who would not be able to send their children to our amazing school without help. Every gift is matched 100% by Cadence Education.</p>
+        <button type="button" class="btn" id="scholarship-open">About the Scholarship Drive</button>
+      </article>
     </div>
   </section>
 
@@ -361,9 +373,16 @@ p.pay { background: var(--green-soft); color: var(--green-ink); border-radius: 8
   </div>
   <div class="swag-body">
     <p>This spring, the Montclare Book Fair is getting a whole new look! We're turning it into a book exchange in the school library, where our little readers get to browse, choose, and "buy" their very own books, each one for a symbolic $1. Classes will visit during the school day, and families are invited to stop by during Parent-Teacher Conferences on April 12 and 13.</p>
+    <p><b><span aria-hidden="true">📍</span> School library</b></p>
+    <ul class="schedule">
+      <li><b>Monday, April 12</b><span>Parent-Teacher Conferences</span></li>
+      <li><b>Tuesday, April 13</b><span>Parent-Teacher Conferences</span></li>
+      <li><b>Wednesday, April 14</b></li>
+      <li><b>Thursday, April 15</b></li>
+    </ul>
     <p class="gives-note"><b>Start setting books aside!</b> In the weeks before the fair, we'll be collecting gently used children's books from Montclare families, so start setting aside the stories your kids have outgrown.</p>
     <p>Any books left after the fair will be donated through Montclare Gives Back, so every book gets a new reader. More details to come!</p>
-    <a class="btn" href="https://calendar.google.com/calendar/render?action=TEMPLATE&amp;text=Montclare%20Book%20Fair&amp;dates=20270412/20270414&amp;details=A%20book%20exchange%20in%20the%20school%20library%3A%20every%20book%20a%20symbolic%20%241.%20Families%20are%20invited%20to%20stop%20by%20during%20Parent-Teacher%20Conferences%20on%20April%2012%20and%2013.%20https%3A%2F%2Fholidayfair.montclarepa.org%2F&amp;location=Montclare%20Children%27s%20School" target="_blank" rel="noopener">Add to Google Calendar</a>
+    <a class="btn" href="https://calendar.google.com/calendar/render?action=TEMPLATE&amp;text=Montclare%20Book%20Fair&amp;dates=20270412/20270416&amp;details=A%20book%20exchange%20in%20the%20school%20library%3A%20every%20book%20a%20symbolic%20%241.%20Families%20are%20invited%20to%20stop%20by%20during%20Parent-Teacher%20Conferences%20on%20April%2012%20and%2013.%20https%3A%2F%2Fholidayfair.montclarepa.org%2F&amp;location=Montclare%20Children%27s%20School" target="_blank" rel="noopener">Add to Google Calendar</a>
   </div>
 </dialog>
 
@@ -387,7 +406,7 @@ p.pay { background: var(--green-soft); color: var(--green-ink); border-radius: 8
 
 <dialog class="swag gives" id="scholarship" aria-labelledby="scholarship-title">
   <div class="swag-head">
-    <div><p class="eyebrow">Gym 2 · Montclare Scholarship Fund</p><h2 id="scholarship-title">Scholarship Drive</h2></div>
+    <div><p class="eyebrow">December 1–31 · Montclare Scholarship Fund</p><h2 id="scholarship-title">Scholarship Drive</h2></div>
     <button type="button" class="swag-close" aria-label="Close">×</button>
   </div>
   <div class="swag-body">
