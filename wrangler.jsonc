@@ -15,7 +15,11 @@
   "vars": {
     // Number of face painters working at the same time, and minutes per child.
     "PAINTERS": "1",
-    "MINUTES_PER_CHILD": "10"
+    "MINUTES_PER_CHILD": "10",
+    // The waitlist is closed until this time (midnight Dec 5 in New York); before then,
+    // joining needs WAITLIST_PASSWORD, so volunteers can test it.
+    "WAITLIST_OPENS": "2026-12-05T05:00:00Z",
+    "WAITLIST_PASSWORD": "2026"
   },
   "env": {
     // Preview deploys (`npm run preview`). Same database as production.
@@ -29,7 +33,9 @@
       ],
       "vars": {
         "PAINTERS": "1",
-        "MINUTES_PER_CHILD": "10"
+        "MINUTES_PER_CHILD": "10",
+        "WAITLIST_OPENS": "2026-12-05T05:00:00Z",
+        "WAITLIST_PASSWORD": "2026"
       }
     }
   }

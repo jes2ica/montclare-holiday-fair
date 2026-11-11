@@ -38,6 +38,11 @@ async function handleApi(request, env, url) {
   if (path === '/api/fp/join' && method === 'POST') {
     return join(request, env);
   }
+  // The closed-waitlist pop-up checks the password here before showing the form.
+  if (path === '/api/fp/unlock' && method === 'POST') {
+    const body = await request.json().catch(() => ({}));
+    return json({ ok: !waitlistClosed(env) || clean(body.password, 40) === String(env.WAITLIST_PASSWORD || '') });
+  }
 
   if (path.startsWith('/api/fp/staff/')) {
     if (!env.STAFF_PIN) return json({ error: 'Staff PIN is not set up. Run: npx wrangler pages secret put STAFF_PIN' }, 503);
@@ -105,6 +110,7 @@ async function publicQueue(env) {
     painters: est.painters,
     minutes_per_child: est.minutes,
     join_now_min: est.join_now_min,
+    closed: waitlistClosed(env),
     // Public board shows only ticket number and the child's first initial.
     items: est.items.map((r) => ({
       ticket: r.id,
@@ -164,6 +170,9 @@ async function join(request, env) {
   if (!child) return json({ error: "Enter your child's full name." }, 400);
   if (!mobile) return json({ error: 'Enter a 10-digit US mobile number.' }, 400);
   if (body.sms_consent !== true) return json({ error: 'Check the box to agree to receive the text alert.' }, 400);
+  if (waitlistClosed(env) && clean(body.password, 40) !== String(env.WAITLIST_PASSWORD || '')) {
+    return json({ error: body.password ? 'Wrong password.' : 'The waitlist is closed until Saturday, December 5.', closed: true }, 403);
+  }
 
   // Same phone + same child already in line: return that ticket instead of a duplicate.
   const existing = await env.DB.prepare(
@@ -182,6 +191,12 @@ async function join(request, env) {
   const queue = await publicQueue(env);
   const mine = queue.items.find((i) => i.ticket === ticket);
   return json({ ticket, child, already: !!existing, est_min: mine ? mine.est_min : 0, ahead: mine ? mine.ahead : 0, queue });
+}
+
+// Closed until WAITLIST_OPENS (an ISO time); unset means always open.
+function waitlistClosed(env) {
+  const opens = Date.parse(env.WAITLIST_OPENS || '');
+  return Number.isFinite(opens) && Date.now() < opens;
 }
 
 function clean(v, max) {

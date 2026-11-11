@@ -518,6 +518,7 @@ p.pay { background: var(--green-soft); color: var(--green-ink); border-radius: 8
   function show(q) {
     var n = q.items.filter(function (i) { return i.status !== 'painting'; }).length;
     num.textContent = q.join_now_min <= 0 ? 'No wait' : '~' + q.join_now_min + ' min';
+    if (q.closed) { num.textContent = 'Closed'; lbl.textContent = 'The waitlist opens Saturday, December 5'; return; }
     lbl.textContent = n === 0 ? 'Nobody in line right now' : n + (n === 1 ? ' child' : ' children') + ' in line' + (window.FP_DEMO ? ' (example)' : '');
   }
   function refresh() {

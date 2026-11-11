@@ -59,6 +59,7 @@ On the day:
 - Post a QR code to the waitlist URL at the station.
 - Flow per child: **Text: turn ready** → **Start** (child sits down) → **Done**.
 - More than one painter? Change `PAINTERS` in `wrangler.jsonc` and run `npx wrangler pages deploy`.
+- The waitlist is closed until `WAITLIST_OPENS` (midnight December 5, New York time). Before then, joining needs `WAITLIST_PASSWORD`, so volunteers can test it. Both are under `vars` in `wrangler.jsonc`.
 
 ## 50/50 raffle
 

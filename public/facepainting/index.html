@@ -71,7 +71,7 @@ form { display: grid; gap: 18px; }
 .field { display: grid; gap: 6px; }
 label { font-weight: 600; font-size: 0.95rem; }
 .hint { font-size: 0.85rem; color: var(--muted); font-weight: 400; }
-input[type="text"], input[type="tel"] {
+input[type="text"], input[type="tel"], input[type="password"] {
   font: inherit; color: var(--ink); background: var(--paper);
   border: 1px solid var(--line); border-radius: 6px; padding: 12px 14px; width: 100%;
 }
@@ -84,6 +84,13 @@ button.primary:hover { filter: brightness(1.08); }
 button.primary:disabled { opacity: 0.6; cursor: wait; }
 button.link { font: inherit; font-size: 0.92rem; color: var(--accent); background: none; border: 0; padding: 0; text-decoration: underline; cursor: pointer; justify-self: start; }
 .error { color: var(--error); font-size: 0.9rem; }
+/* Closed pop-up: covers the page until the password is entered. */
+.closed { width: min(420px, calc(100vw - 32px)); border: 0; border-radius: 14px; padding: 24px; background: var(--paper); color: var(--ink); box-shadow: 0 20px 60px rgb(0 0 0 / 0.35); }
+.closed::backdrop { background: rgb(15 18 45 / 0.75); }
+.closed form { gap: 14px; }
+.closed h2 { font-family: var(--display); font-weight: 400; font-size: 1.6rem; margin: 0; }
+.closed p { margin: 0; }
+.closed .back { font-size: 0.92rem; justify-self: center; color: var(--accent); }
 
 /* Confirmation */
 .ticket { padding: 20px; border: 1.5px solid var(--accent); border-radius: 10px; background: var(--paper); display: grid; gap: 10px; }
@@ -123,6 +130,20 @@ tr.mine td { background: var(--accent-soft); }
     <p class="lede">Skip standing in line. Add your child to the list and we'll text you when it's their turn. Joining is optional: you can also wait at the station.</p>
   </div>
 </header>
+
+<dialog class="closed" id="closed" aria-labelledby="closed-title">
+  <form id="closed-form" novalidate>
+    <h2 id="closed-title">The waitlist is closed</h2>
+    <p>The face-painting waitlist opens on <b>Saturday, December 5</b>, the day of the fair. Please come back then!</p>
+    <div class="field">
+      <label for="password">Have a password? <span class="hint">· for volunteers</span></label>
+      <input type="password" id="password" autocomplete="off" maxlength="40">
+    </div>
+    <p class="error" id="password-error" hidden></p>
+    <button type="submit" class="primary">Enter</button>
+    <a class="back" href="/">← Back to the Holiday Fair</a>
+  </form>
+</dialog>
 
 <main>
   <div class="wrap">
@@ -211,6 +232,7 @@ tr.mine td { background: var(--accent-soft); }
   };
 
   function render(q) {
+    if (q.closed && !password && !$('closed').open) $('closed').showModal();
     var waiting = q.items.filter(function (i) { return i.status !== 'painting'; }).length;
     $('stat-line').innerHTML = waiting + '<small>' + (waiting === 1 ? 'child' : 'children') + '</small>';
     $('stat-wait').textContent = mins(q.join_now_min);
@@ -265,13 +287,33 @@ tr.mine td { background: var(--accent-soft); }
       });
   }
 
+  // Closed until December 5: the pop-up stays up until the password checks out.
+  var password = '';
+  try { password = sessionStorage.getItem('fp-password') || ''; } catch (e) {}
+  $('closed').addEventListener('cancel', function (e) { e.preventDefault(); });
+  $('closed-form').addEventListener('submit', function (e) {
+    e.preventDefault();
+    var tryPw = $('password').value.trim(), perr = $('password-error');
+    if (!tryPw) { perr.textContent = 'Enter the password.'; perr.hidden = false; return; }
+    fetch('/api/fp/unlock', { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ password: tryPw }) })
+      .then(function (r) { return r.json(); })
+      .then(function (res) {
+        if (!res.ok) { perr.textContent = 'Wrong password.'; perr.hidden = false; $('password').select(); return; }
+        password = tryPw;
+        try { sessionStorage.setItem('fp-password', password); } catch (e2) {}
+        $('closed').close();
+      })
+      .catch(function () { perr.textContent = 'Couldn’t check the password. Try again.'; perr.hidden = false; });
+  });
+
   form.addEventListener('submit', function (e) {
     e.preventDefault();
     var data = {
       parent_name: $('parent-name').value.trim(),
       child_name: $('child-name').value.trim(),
       mobile: $('mobile').value,
-      sms_consent: $('sms-consent').checked
+      sms_consent: $('sms-consent').checked,
+      password: password
     };
     var digits = data.mobile.replace(/\D/g, '');
     if (digits.length === 11 && digits[0] === '1') digits = digits.slice(1);
